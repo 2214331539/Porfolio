@@ -1,0 +1,44 @@
+# PanOS 开发文档索引
+
+本文档集基于根目录 `产品思路.md` 拆解而成，用于指导 PanOS 个人站从 0 到 1 的产品、架构、数据库、前后端模块和迭代计划。
+
+## 文档清单
+
+| 文档 | 用途 |
+| --- | --- |
+| [01-product-scope.md](01-product-scope.md) | 产品目标、用户角色、功能边界、MVP 与后续能力 |
+| [02-architecture-tech-stack.md](02-architecture-tech-stack.md) | 总体架构、技术栈、部署拓扑、模块边界 |
+| [03-data-model.md](03-data-model.md) | PostgreSQL 数据库设计、核心表、索引、关系约束 |
+| [04-api-design.md](04-api-design.md) | 前后台 REST API、鉴权、响应格式、错误码 |
+| [05-frontend-structure.md](05-frontend-structure.md) | Next.js 前端目录、路由、状态管理、组件分层 |
+| [06-backend-structure.md](06-backend-structure.md) | NestJS 后端目录、模块职责、服务拆分、任务队列 |
+| [07-module-specs.md](07-module-specs.md) | 博客、图文、简历、首页、后台、媒体库的详细模块说明 |
+| [08-development-plan.md](08-development-plan.md) | 里程碑、开发顺序、验收标准、风险控制 |
+| [09-quality-security-ops.md](09-quality-security-ops.md) | 测试、安全、性能、运维、备份与发布规范 |
+
+## 核心结论
+
+- 产品形态：个人内容网站 + 独立后台 CMS。
+- 仓库形态：前后端分离的 TypeScript monorepo。
+- 前端：Next.js App Router、React、Tailwind CSS、Three.js / React Three Fiber。
+- 后端：NestJS、Prisma、PostgreSQL、Redis、BullMQ。
+- 存储：本地开发使用 MinIO，生产使用 S3 兼容对象存储。
+- 内容形态：博客 Markdown、图文笔记多图、简历结构化数据、Landing Page 可配置内容。
+- 管理后台：单管理员模式起步，数据模型预留角色权限扩展。
+
+## 设计原则
+
+1. 前台展示与后台管理解耦：前台只消费公开 API，后台只消费管理 API。
+2. 内容数据与展示样式解耦：博客、图文、简历都保存结构化内容，前端负责渲染主题。
+3. 媒体资源统一入口：图片、附件、缩略图、WebP 转换统一由媒体库负责。
+4. MVP 先跑通闭环：鉴权、媒体、博客发布、前台展示优先于复杂动效和统计。
+5. 单管理员优先，多角色预留：个人站不先做复杂 RBAC，但数据库和代码分层保留扩展点。
+
+## 建议阅读顺序
+
+1. 先读 `01-product-scope.md` 理解产品边界。
+2. 再读 `02-architecture-tech-stack.md` 和 `03-data-model.md` 确定工程骨架。
+3. 开始编码前读 `05-frontend-structure.md` 与 `06-backend-structure.md`。
+4. 每开发一个业务模块前读 `07-module-specs.md` 对齐验收标准。
+5. 每个阶段收尾时按 `08-development-plan.md` 和 `09-quality-security-ops.md` 做验证。
+

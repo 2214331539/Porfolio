@@ -1,0 +1,131 @@
+# 系统架构与技术栈
+
+## 1. 总体架构
+
+PanOS 采用前后端分离、同仓库管理的 monorepo 架构。
+
+```text
+Browser
+  │
+  ├── Next.js Web App
+  │     ├── 前台站点：公开内容展示、SEO、3D 首页
+  │     └── 后台管理：CMS、媒体库、站点配置
+  │
+  └── NestJS API
+        ├── Auth / Admin
+        ├── Blog / Notes / Resume
+        ├── Media / Settings
+        ├── Analytics / Logs
+        └── Jobs
+              │
+              ├── PostgreSQL
+              ├── Redis
+              └── S3 / MinIO
+```
+
+前端不直接访问数据库或对象存储。后端负责鉴权、数据一致性、媒体处理和业务规则。
+
+## 2. 技术栈选择
+
+| 层级 | 技术 | 选择理由 |
+| --- | --- | --- |
+| Monorepo | pnpm workspace + Turborepo | 统一管理前后端包、共享类型和工具链 |
+| 前端框架 | Next.js App Router + React + TypeScript | SEO、路由、SSR/SSG、后台 SPA 体验兼容 |
+| 样式 | Tailwind CSS + CSS Variables | 主题切换、响应式、设计系统稳定 |
+| UI 基础 | Radix UI / shadcn/ui 风格组件 | 无障碍、后台表单和弹层效率高 |
+| 数据请求 | TanStack Query | 后台 CRUD、缓存、乐观更新、错误重试 |
+| 前端状态 | Zustand | 轻量管理主题、后台侧栏、编辑器草稿状态 |
+| 3D | Three.js + React Three Fiber + Drei | Landing Page 3D 主视觉和交互 |
+| 动效 | Framer Motion | 入场动画、卡片 hover、页面过渡 |
+| 后端框架 | NestJS + TypeScript | 模块化、依赖注入、守卫、拦截器、任务组织清晰 |
+| ORM | Prisma | 类型安全、迁移清晰、与 PostgreSQL 配合成熟 |
+| 数据库 | PostgreSQL | 内容管理、关系查询、JSONB、全文检索能力稳定 |
+| 缓存/队列 | Redis + BullMQ | Token 黑名单、热点缓存、媒体处理任务 |
+| 对象存储 | MinIO / S3 兼容服务 | 本地和生产一致，适合图片与附件 |
+| 图片处理 | Sharp | 压缩、缩略图、WebP/AVIF 变体生成 |
+| Markdown | unified / remark / rehype | Markdown AST、目录、代码高亮、安全过滤 |
+| API 文档 | OpenAPI / Swagger | 后端契约可视化，便于联调 |
+| 测试 | Vitest、Testing Library、Playwright、Jest/Supertest | 覆盖单元、组件、E2E、API |
+
+## 3. 应用拆分
+
+```text
+apps/
+├── web   # Next.js 前台 + 后台管理界面
+└── api   # NestJS API 服务
+
+packages/
+├── config       # ESLint、TSConfig、Prettier、Tailwind preset
+├── contracts    # API DTO、枚举、共享类型、Zod schema
+├── ui           # 可复用 UI 原语和业务无关组件
+└── utils        # 日期、slug、阅读时长、文件大小等工具
+```
+
+后台管理界面放在 `apps/web` 内，而不是单独应用。理由是前后台共享主题、组件、路由能力和构建流程，但通过路由组、API client 和鉴权 guard 保持边界。
+
+## 4. 环境划分
+
+| 环境 | 用途 | 数据 |
+| --- | --- | --- |
+| local | 本地开发 | Docker Compose 启动 PostgreSQL、Redis、MinIO |
+| staging | 预发布验证 | 脱敏测试数据，连接独立对象存储 |
+| production | 正式站点 | 生产数据库、CDN、备份策略 |
+
+## 5. 部署建议
+
+### 简化生产部署
+
+- Web：Vercel / Node Server / Docker。
+- API：Docker 部署到 VPS 或云容器服务。
+- PostgreSQL：云数据库或自建 Docker volume。
+- Redis：云 Redis 或同机 Docker。
+- 对象存储：Cloudflare R2、AWS S3、阿里云 OSS、腾讯云 COS 均可。
+- CDN：对象存储前置 CDN，图片响应走缓存。
+
+### 单机 Docker 拓扑
+
+```text
+nginx
+├── panos-web:3000
+├── panos-api:4000
+└── static/media -> S3-compatible storage
+
+postgres:5432
+redis:6379
+minio:9000
+```
+
+## 6. 前后端边界
+
+| 事项 | 前端负责 | 后端负责 |
+| --- | --- | --- |
+| 页面路由 | 前台和后台路由组织 | 无 |
+| SEO | meta、Open Graph、sitemap 展示 | 提供 SEO 字段和 sitemap 数据 |
+| 内容渲染 | Markdown 展示、目录、代码样式 | Markdown 安全清洗和摘要预处理 |
+| 鉴权 | 保存 Token、路由保护、过期跳转 | 签发 Token、刷新、校验、撤销 |
+| 媒体 | 上传 UI、选择器、裁剪交互 | 文件校验、存储、压缩、变体、删除 |
+| 统计 | 触发曝光/阅读事件 | 去重、聚合、热门排行 |
+| PDF | 调用导出接口或浏览器打印样式 | 生成服务端 PDF 可作为后续增强 |
+
+## 7. 关键技术决策
+
+### 7.1 REST 优先
+
+项目采用 REST API，而不是 GraphQL。内容管理后台 CRUD 明确，REST 更直接，缓存和权限判断简单。共享类型通过 `packages/contracts` 维护。
+
+### 7.2 Slug 作为公开资源标识
+
+博客、图文、分类、标签、话题对外使用 `slug`，内部使用 `id`。这样 URL 稳定，数据迁移和后台编辑更安全。
+
+### 7.3 媒体文件不可直接覆盖
+
+媒体上传后生成不可变 `storage_key`。替换封面时创建新资源引用，旧资源通过引用计数或后台清理任务处理，避免缓存污染。
+
+### 7.4 结构化简历
+
+简历不保存为单个 Markdown 文件，而是结构化存储。这样才能支持版式切换、排序、PDF 导出和首页局部预览。
+
+### 7.5 Landing Page 配置化但不过度 CMS 化
+
+首页 Hero 3D 模型、文案、推荐内容、社交链接应可配置；复杂 3D 场景代码保持在前端组件中，不放入数据库。
+
