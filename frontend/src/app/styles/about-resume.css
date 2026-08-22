@@ -1,0 +1,52 @@
+.resume-about-page{width:min(1180px,100%);max-width:none;padding:130px 28px 110px}
+.resume-archive{width:min(920px,100%);margin:0 auto}
+.resume-archive-head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;padding-bottom:25px;border-bottom:1px solid var(--line)}
+.resume-archive-head p,.about-platforms>header p{margin:0;color:var(--muted);font-size:10px;letter-spacing:.14em}
+.resume-archive-head h1{font-size:clamp(30px,4vw,48px);letter-spacing:-.055em;line-height:1.25;margin:12px 0 10px}
+.resume-archive-head>div>span{color:var(--muted);font-size:13px}
+.resume-controls{display:flex;align-items:center;gap:7px;flex:0 0 auto}
+.resume-controls>span{font-size:10px;color:var(--muted);margin-right:7px;font-variant-numeric:tabular-nums}
+.resume-controls button{width:37px;height:37px;border:1px solid var(--line);background:var(--paper);display:grid;place-items:center;cursor:pointer}
+.resume-controls button:hover:not(:disabled){background:var(--paper-2)}
+.resume-controls button:disabled{opacity:.3;cursor:not-allowed}
+.resume-controls svg{width:16px}
+.resume-track{width:100vw;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-inline:contain;scrollbar-width:none;margin:30px 0 0 calc(50% - 50vw);padding:0 max(28px,calc((100vw - 920px) / 2))}
+.resume-track::-webkit-scrollbar{display:none}
+.resume-version{flex:0 0 min(920px,calc(100vw - 56px));scroll-snap-align:start;scroll-snap-stop:always;padding:0 24px}
+.resume-document{width:min(740px,100%);margin:0 auto;position:relative}
+.resume-image-link{min-height:420px;max-height:min(78vh,920px);display:flex;align-items:flex-start;justify-content:center;overflow:hidden;background:var(--paper-2);border:1px solid var(--line);padding:18px}
+.resume-image-link img{display:block;width:auto;max-width:100%;height:auto;max-height:calc(min(78vh,920px) - 36px);object-fit:contain;background:white}
+.resume-label{position:absolute;z-index:2;top:30px;right:30px;background:var(--ink);color:var(--paper);padding:7px 11px;font-size:10px;letter-spacing:.08em;box-shadow:4px 4px 0 color-mix(in srgb,var(--paper) 72%,transparent)}
+.resume-version-meta{width:min(740px,100%);margin:0 auto;padding:22px 2px 5px;display:flex;align-items:flex-start;justify-content:space-between;gap:28px}
+.resume-version-meta small{font-size:9px;letter-spacing:.1em;color:var(--muted)}
+.resume-version-meta h2{font-size:24px;letter-spacing:-.035em;margin:8px 0 0}
+.resume-version-meta p{max-width:580px;margin:9px 0 0;color:var(--muted);font-size:13px;line-height:1.7}
+.resume-download{flex:0 0 auto;border:1px solid var(--line);padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12px}
+.resume-download:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.resume-download svg{width:15px}
+.resume-pagination{display:flex;justify-content:center;gap:7px;margin-top:25px}
+.resume-pagination button{width:20px;height:3px;border:0;background:var(--line);padding:0;cursor:pointer;transition:width .2s,background .2s}
+.resume-pagination button.active{width:42px;background:var(--ink)}
+.resume-empty{min-height:360px;margin-top:30px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px;color:var(--muted);font-size:13px}
+.resume-empty svg{width:28px;margin-bottom:6px}
+.resume-empty strong{color:var(--ink);font-size:16px}
+.about-platforms{width:min(1040px,100%);margin:125px auto 0;padding-top:34px;border-top:1px solid var(--line)}
+.about-platforms>header h2{font-size:clamp(28px,3.2vw,42px);letter-spacing:-.05em;margin:12px 0 0}
+.about-platforms .platform-grid{margin-top:42px}
+.about-platforms .platform-card{min-height:180px}
+.about-platforms .platform-card h3{font-size:23px;letter-spacing:-.04em;margin:8px 0 0}
+
+@media(max-width:680px){
+  .resume-about-page{padding:96px 18px 70px}
+  .resume-archive-head{align-items:flex-start;flex-direction:column;gap:20px}
+  .resume-controls{align-self:flex-end}
+  .resume-track{margin:24px -18px 0;padding:0 18px}
+  .resume-version{flex-basis:calc(100vw - 36px);padding:0 8px}
+  .resume-image-link{min-height:360px;padding:9px}
+  .resume-image-link img{max-height:calc(min(78vh,920px) - 18px)}
+  .resume-label{top:17px;right:17px}
+  .resume-version-meta{flex-direction:column;gap:18px;padding-top:18px}
+  .resume-download{width:100%;justify-content:center}
+  .about-platforms{margin-top:85px}
+  .about-platforms .platform-grid{margin-top:30px}
+}

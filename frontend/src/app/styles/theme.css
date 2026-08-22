@@ -1,0 +1,22 @@
+/* Shared public-site color tokens. Light mode follows a neutral Notion-like white. */
+:root {
+  --paper: #fff;
+  --paper-2: #f7f7f5;
+  --ink: #37352f;
+  --muted: #787774;
+  --line: rgba(55, 53, 47, .16);
+  --card: #fff;
+  --shadow: 0 10px 30px rgba(15, 15, 15, .08);
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  --paper: #191919;
+  --paper-2: #252525;
+  --ink: rgba(255, 255, 255, .9);
+  --muted: rgba(255, 255, 255, .58);
+  --line: rgba(255, 255, 255, .13);
+  --card: #202020;
+  --shadow: 0 20px 60px rgba(0, 0, 0, .3);
+  color-scheme: dark;
+}

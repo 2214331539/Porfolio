@@ -1,0 +1,247 @@
+/* Public-site polish: Apple-inspired typography, materials and motion.
+   Everything is scoped so the content-management UI keeps its own visual system. */
+.public-site-shell {
+  --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+  --apple-mono: "SFMono-Regular", "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --apple-ease: cubic-bezier(.16, 1, .3, 1);
+  --apple-ease-snappy: cubic-bezier(.2, .8, .2, 1);
+  --apple-radius-control: 11px;
+  --apple-radius-card: 20px;
+  --apple-shadow-card: 0 1px 2px rgba(0, 0, 0, .06), 0 12px 32px rgba(0, 0, 0, .1);
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: var(--apple-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.public-site-shell,
+.public-site-shell *,
+.public-site-shell *::before,
+.public-site-shell *::after {
+  font-family: var(--apple-font) !important;
+}
+
+.public-site-shell :where(h1, h2, h3, h4, strong, b) {
+  font-weight: 600;
+  font-variation-settings: "wght" 600;
+  letter-spacing: -.025em;
+}
+
+.public-site-shell :where(p, li) {
+  text-wrap: pretty;
+}
+
+.public-site-shell :where(.eyebrow, time, .post-meta, .article-meta, .resume-date, .repository-count, code, pre, kbd) {
+  font-family: var(--apple-mono) !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.01em;
+}
+
+.public-site-shell ::selection {
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.public-site-shell :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ink) 30%, transparent);
+  outline-offset: 3px;
+}
+
+.public-site-shell .site-header {
+  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--ink) 10%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--paper) 65%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  backdrop-filter: saturate(180%) blur(22px);
+}
+
+.public-site-shell :where(.brand, .nav-links a, .footer-links a, .text-link, .back-link) {
+  transition: color .22s ease, opacity .22s ease, background-color .22s ease, transform .35s var(--apple-ease);
+}
+
+.public-site-shell .brand-logo,
+.public-site-shell .footer-logo {
+  transition: transform .5s var(--apple-ease), opacity .25s ease;
+}
+
+.public-site-shell :where(.icon-button, .header-search-control button, .resume-controls button, .article-reading-tools button, .gallery-control) {
+  border-radius: 999px;
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .3s var(--apple-ease), transform .3s var(--apple-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.public-site-shell .header-search {
+  transition: width .48s var(--apple-ease), opacity .25s ease;
+}
+
+.public-site-shell .header-search-control {
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--paper-2) 88%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 5%, transparent);
+  transition: border-color .2s ease, box-shadow .3s var(--apple-ease), background-color .2s ease;
+}
+
+.public-site-shell .header-search-control:focus-within {
+  border-color: color-mix(in srgb, var(--ink) 24%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.public-site-shell .header-search-results {
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .16), 0 0 0 1px color-mix(in srgb, var(--paper) 70%, transparent) inset;
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  animation: apple-pop-in .36s var(--apple-ease) both;
+  transform-origin: top right;
+}
+
+.public-site-shell .header-search-results a {
+  border-radius: 11px;
+  transition: background-color .18s ease, transform .3s var(--apple-ease);
+}
+
+.public-site-shell :where(.post-card, .note-card, .repository-card, .platform-card, .resume-stage, .resume-document, .resume-image-link, .article-cover, .gallery) {
+  border-radius: var(--apple-radius-card);
+}
+
+.public-site-shell :where(.post-card, .note-card, .repository-card, .platform-card, .resume-document) {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  transition: transform .55s var(--apple-ease), box-shadow .55s var(--apple-ease), border-color .25s ease, background-color .25s ease;
+  will-change: transform;
+}
+
+.public-site-shell :where(.post-visual, .note-image, .repository-card-cover, .resume-preview, .article-cover img, .gallery > img) {
+  border-radius: calc(var(--apple-radius-card) - 5px);
+  overflow: hidden;
+}
+
+.public-site-shell .resume-image-link,
+.public-site-shell .gallery {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 10px 30px rgba(0, 0, 0, .07);
+}
+
+.public-site-shell .resume-image-link {
+  transition: border-color .25s ease, box-shadow .45s var(--apple-ease), transform .45s var(--apple-ease);
+}
+
+.public-site-shell .resume-label,
+.public-site-shell .gallery-count {
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .14);
+}
+
+.public-site-shell .resume-pagination button {
+  border-radius: 999px;
+  transition: width .38s var(--apple-ease), background-color .2s ease, transform .25s var(--apple-ease);
+}
+
+.public-site-shell .platform-card button,
+.public-site-shell .gallery button {
+  border-radius: 999px;
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, transform .3s var(--apple-ease);
+}
+
+.public-site-shell :where(.post-visual img, .note-image img, .repository-card-cover img, .resume-preview img, .article-cover img, .gallery > img) {
+  transition: transform .7s var(--apple-ease), filter .35s ease;
+}
+
+.public-site-shell :where(.tag, .pill, .resume-badge, .resume-kind, .repository-count, .status-chip) {
+  border-radius: 999px;
+}
+
+.public-site-shell :where(.resume-download, .article-reading-tools button, .note-actions button, .repository-back, .load-more, .pagination button) {
+  border-radius: var(--apple-radius-control);
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .3s var(--apple-ease), transform .3s var(--apple-ease);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.public-site-shell :where(.article-body pre, .article-body table, .article-body blockquote, .article-prose pre, .article-prose table, .article-prose blockquote) {
+  border-radius: 14px;
+}
+
+.public-site-shell .public-site-main > * {
+  animation: apple-page-enter .58s var(--apple-ease) both;
+}
+
+.public-site-shell :where(.masonry-posts, .repository-grid, .repository-content-grid, .platform-grid, .notes-grid) > * {
+  animation: apple-item-enter .58s var(--apple-ease) both;
+}
+
+.public-site-shell :where(.masonry-posts, .repository-grid, .repository-content-grid, .platform-grid, .notes-grid) > :nth-child(2) { animation-delay: 45ms; }
+.public-site-shell :where(.masonry-posts, .repository-grid, .repository-content-grid, .platform-grid, .notes-grid) > :nth-child(3) { animation-delay: 90ms; }
+.public-site-shell :where(.masonry-posts, .repository-grid, .repository-content-grid, .platform-grid, .notes-grid) > :nth-child(4) { animation-delay: 135ms; }
+.public-site-shell :where(.masonry-posts, .repository-grid, .repository-content-grid, .platform-grid, .notes-grid) > :nth-child(5) { animation-delay: 180ms; }
+.public-site-shell :where(.masonry-posts, .repository-grid, .repository-content-grid, .platform-grid, .notes-grid) > :nth-child(n+6) { animation-delay: 225ms; }
+
+@media (hover: hover) and (pointer: fine) {
+  .public-site-shell .brand:hover .brand-logo {
+    transform: scale(1.06) rotate(-2deg);
+  }
+
+  .public-site-shell :where(.icon-button, .header-search-control button, .resume-controls button, .article-reading-tools button, .gallery-control):hover {
+    background: var(--paper-2);
+    transform: scale(1.045);
+  }
+
+  .public-site-shell :where(.icon-button, .header-search-control button, .resume-controls button, .article-reading-tools button, .gallery-control):active,
+  .public-site-shell :where(.resume-download, .note-actions button, .repository-back, .load-more, .pagination button):active {
+    transform: scale(.94);
+    transition-duration: .08s;
+  }
+
+  .public-site-shell .header-search-results a:hover {
+    background: var(--paper-2);
+    transform: translateX(2px);
+  }
+
+  .public-site-shell :where(.post-card, .repository-card, .platform-card, .resume-document):hover {
+    transform: translateY(-4px) scale(1.006);
+    box-shadow: var(--apple-shadow-card);
+  }
+
+  .public-site-shell .note-card:hover {
+    transform: translateY(-4px) scale(1.006);
+    box-shadow: var(--apple-shadow-card);
+  }
+
+  .public-site-shell .note-card:nth-child(even):hover {
+    transform: translateY(36px) scale(1.006);
+  }
+
+  .public-site-shell :where(.post-card, .note-card, .repository-card, .resume-document):hover :where(.post-visual img, .note-image img, .repository-card-cover img, .resume-preview img) {
+    transform: scale(1.025);
+  }
+}
+
+@keyframes apple-page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes apple-item-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes apple-pop-in {
+  from { opacity: 0; transform: translateY(-6px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-site-shell,
+  .public-site-shell * {
+    scroll-behavior: auto !important;
+  }
+
+  .public-site-shell *,
+  .public-site-shell *::before,
+  .public-site-shell *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

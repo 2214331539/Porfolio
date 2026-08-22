@@ -1,0 +1,81 @@
+/* Nested content repositories: quiet archive navigation with compact reading layouts. */
+.content-library{width:min(1180px,100%);min-height:100vh;margin:0 auto;padding:122px 28px 100px}
+.repository-browser{margin-bottom:42px}
+.repository-toolbar{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line)}
+.repository-toolbar>span{max-width:400px;color:var(--muted);font-size:12px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.repository-breadcrumbs{display:flex;align-items:center;gap:5px;min-width:0;flex-wrap:wrap}
+.repository-breadcrumbs>span{display:flex;align-items:center;gap:5px}
+.repository-breadcrumbs svg{width:14px;height:14px;color:var(--muted)}
+.repository-breadcrumbs button{border:0;background:transparent;padding:8px 5px;display:flex;align-items:center;gap:8px;color:var(--muted);cursor:pointer;font-size:13px}
+.repository-breadcrumbs button:hover,.repository-breadcrumbs button.active{color:var(--ink)}
+.repository-breadcrumbs button.active{font-weight:700}
+.repository-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:24px}
+.repository-card{min-height:126px;border:1px solid var(--line);background:var(--card);padding:22px 20px;display:grid;grid-template-columns:42px minmax(0,1fr) auto;grid-template-rows:1fr auto;gap:8px 14px;text-align:left;cursor:pointer;position:relative;transition:transform .2s,border-color .2s,background .2s}
+.repository-card::before{content:'';position:absolute;width:54px;height:7px;left:14px;top:-7px;border:1px solid var(--line);border-bottom:0;background:var(--card)}
+.repository-card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--ink) 38%,var(--line));background:var(--paper-2)}
+.repository-folder{width:42px;height:42px;border:1px solid var(--line);display:grid;place-items:center;grid-row:1/-1;background:var(--paper)}
+.repository-folder svg{width:20px}
+.repository-card-copy{display:flex;flex-direction:column;gap:6px;min-width:0}
+.repository-card-copy strong{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.repository-card-copy small,.repository-count{color:var(--muted);font-size:11px}
+.repository-card>svg{width:16px;height:16px;grid-column:3;grid-row:1;align-self:center}
+.repository-count{grid-column:2/4;grid-row:2}
+.repository-content-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+.repository-content-grid .post-card{min-height:350px;margin:0;break-inside:auto}
+.repository-content-grid .post-card.visual{min-height:430px}
+.repository-content-grid .post-card h3{font-size:clamp(20px,2vw,27px)}
+.note-repository-grid .note-card{margin:0;transform:none!important}
+.note-repository-grid .note-image img{width:100%;aspect-ratio:4/3;min-height:0;object-fit:cover}
+.note-image-empty{aspect-ratio:4/3;display:grid;place-items:center;color:var(--muted);font-size:12px;background:var(--paper-2)}
+.repository-empty{min-height:260px;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted)}
+.repository-empty svg{width:27px;height:27px;margin-bottom:5px}
+.repository-empty strong{color:var(--ink);font-size:16px}
+.repository-empty span{font-size:12px}
+
+.refined-article{max-width:980px;padding-top:126px}
+.refined-article>.back-link{max-width:760px;margin-left:auto;margin-right:auto;color:var(--muted)}
+.refined-article .article-header{max-width:760px;margin:52px auto 58px;text-align:left}
+.refined-article .article-label{display:flex;align-items:center;gap:10px;font-size:10px}
+.refined-article .article-label span+span::before{content:'·';margin-right:10px;color:var(--line)}
+.refined-article .article-header h1{font-size:clamp(32px,4.6vw,54px);line-height:1.28;letter-spacing:-.05em;margin:20px 0 18px;text-wrap:balance}
+.refined-article .article-header>p{font-size:16px;line-height:1.9;max-width:660px;margin:0;color:var(--muted)}
+.refined-article .metadata{justify-content:flex-start;margin-top:22px;color:var(--muted)}
+.article-cover{max-width:900px;margin:0 auto 48px;background:var(--paper-2);overflow:hidden}
+.article-cover img{width:100%;max-height:560px;display:block;object-fit:cover}
+.article-reading-tools{max-width:720px;margin:0 auto 26px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;gap:6px;color:var(--muted)}
+.article-reading-tools span{font-size:11px;margin-right:5px}
+.article-reading-tools button{width:29px;height:29px;border:0;background:transparent;display:grid;place-items:center;cursor:pointer}
+.article-reading-tools button:hover{background:var(--paper-2);color:var(--ink)}
+.article-reading-tools svg{width:13px}
+.article-prose{max-width:720px;margin:0 auto;line-height:2.05;letter-spacing:.012em}
+.article-prose>p{margin:1.35em 0}
+.article-prose h1{font-size:1.85em}
+.article-prose h2{font-size:1.45em;margin-top:2.5em}
+.article-prose h3{font-size:1.18em;margin-top:2.2em}
+.article-prose img{max-width:100%;height:auto;display:block;margin:2.4em auto}
+.article-prose a{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.article-prose ul,.article-prose ol{padding-left:1.35em}
+.article-prose li{padding-left:.3em;margin:.5em 0}
+.refined-article .article-nav{max-width:720px;margin-left:auto;margin-right:auto}
+.refined-note .note-body h1{font-size:clamp(28px,3.5vw,44px);line-height:1.35;letter-spacing:-.045em;margin:20px 0}
+.refined-note .note-detail-grid{align-items:start}
+.refined-note .note-body{padding-top:28px}
+.refined-note .note-body>p:not(.eyebrow){font-size:16px;line-height:2}
+
+@media(max-width:900px){
+  .repository-grid,.repository-content-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px){
+  .content-library{padding:92px 18px 64px}
+  .repository-toolbar{align-items:flex-start;flex-direction:column;padding:0 0 15px;gap:5px}
+  .repository-toolbar>span{text-align:left;max-width:100%}
+  .repository-grid,.repository-content-grid{grid-template-columns:1fr}
+  .repository-card{min-height:112px}
+  .repository-content-grid .post-card,.repository-content-grid .post-card.visual{min-height:320px}
+  .refined-article{padding-top:94px}
+  .refined-article .article-header{margin:36px auto 42px}
+  .refined-article .article-header h1{font-size:32px}
+  .article-cover{margin:0 -18px 36px}
+  .article-reading-tools{justify-content:space-between}
+  .refined-note .note-body{padding-top:0}
+}

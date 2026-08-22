@@ -1,0 +1,28 @@
+.site-header{overflow:visible}
+.header-actions{position:relative;align-items:center}
+.header-search{position:relative;display:flex;align-items:center;justify-content:flex-end}
+.header-search-control{width:clamp(220px,26vw,320px);height:38px;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;gap:9px;padding:0 8px 0 12px;animation:header-search-in .18s ease both}
+.header-search-control>svg{width:16px;height:16px;flex:0 0 auto;color:var(--muted)}
+.header-search-control input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font-size:13px}
+.header-search-control input::placeholder{color:var(--muted)}
+.header-search-control button{width:28px;height:28px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
+.header-search-control button:hover{background:var(--paper-2);color:var(--ink)}
+.header-search-control button svg{width:15px}
+.header-search-results{position:absolute;right:0;top:calc(100% + 12px);width:min(390px,calc(100vw - 32px));max-height:min(430px,65vh);overflow:auto;background:var(--paper);border:1px solid var(--line);box-shadow:0 14px 40px rgba(15,15,15,.12)}
+.header-search-results p{margin:0;padding:24px;color:var(--muted);font-size:13px}
+.header-search-results .form-error{color:#9b3d30;background:#f7dfdb}
+.header-search-results a{display:grid;grid-template-columns:54px minmax(0,1fr) 18px;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.header-search-results a:last-child{border-bottom:0}
+.header-search-results a:hover,.header-search-results a:focus-visible{background:var(--paper-2);outline:0}
+.header-search-results small{color:var(--muted);font-size:10px}
+.header-search-results strong{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-search-results a>svg{width:15px;color:var(--muted)}
+@keyframes header-search-in{from{width:38px;opacity:.65}to{opacity:1}}
+
+@media(max-width:680px){
+  .site-header:has(.header-search.open) .brand{display:none}
+  .site-header:has(.header-search.open) .header-actions{width:100%}
+  .site-header:has(.header-search.open) .theme-button,.site-header:has(.header-search.open) .mobile-menu{display:none}
+  .header-search.open,.header-search-control{width:100%}
+  .header-search-results{position:fixed;top:63px;left:12px;right:12px;width:auto;max-height:55vh}
+}

@@ -1,0 +1,22 @@
+/* Final landing balance pass */
+.landing-shell{scroll-snap-type:none;scroll-behavior:smooth;overscroll-behavior:contain;touch-action:pan-y}
+.landing-panel{scroll-snap-stop:normal;background:var(--paper)!important}
+.hero-typewriter{font-size:min(3.4vw,44px);white-space:nowrap;color:var(--ink)!important;opacity:1!important;visibility:visible;letter-spacing:-.06em}
+.landing-panel .section-head{margin:0 0 28px;min-height:0}
+.landing-panel .section-head>div,.landing-panel .section-head>.text-link{display:none}
+.landing-content .content-section{height:100%;padding:72px 28px;display:flex;align-items:center}
+.landing-content .masonry-posts{height:min(62vh,650px);width:100%;grid-template-rows:repeat(2,minmax(0,1fr));gap:14px}
+.landing-content .post-card,.landing-content .post-card.large{min-height:0;height:100%;padding:20px}
+.landing-content .post-card h3{font-size:clamp(18px,1.7vw,25px);margin-top:15px}
+.landing-content .post-card-foot{margin-top:14px;padding-top:10px}
+.notes-preview{background:var(--paper)!important}
+.notes-preview .notes-grid{max-height:53vh;gap:14px}
+.notes-preview .note-card{margin-bottom:14px}
+.notes-preview .note-image img{min-height:145px}
+.notes-preview .big-link{margin-top:26px}
+.tape-label{display:none}
+.brand-logo,.footer-logo,.landing-footer img{border:0!important;background:transparent;padding:0;mix-blend-mode:multiply}
+html[data-theme=dark] .brand-logo,html[data-theme=dark] .footer-logo,html[data-theme=dark] .landing-footer img{filter:invert(1);mix-blend-mode:screen}
+.landing-footer{border-top:1px solid var(--line)}
+@media(max-width:900px){.hero-typewriter{font-size:min(4.5vw,40px)}.landing-content .content-section{padding:66px 22px}.landing-content .masonry-posts{height:58vh}.landing-content .post-card h3{font-size:18px}}
+@media(max-width:680px){.hero-typewriter{font-size:clamp(19px,5.4vw,32px);letter-spacing:-.07em}.landing-content .content-section,.notes-preview .content-section{padding:70px 18px}.landing-content .masonry-posts{height:58vh;display:grid}.landing-content .post-card{min-height:0!important;padding:15px}.landing-content .post-card h3{font-size:16px}.notes-preview .notes-grid{max-height:50vh}}

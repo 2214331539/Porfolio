@@ -1,0 +1,24 @@
+{
+  "name": "inkfold-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite frontend",
+    "build": "tsc -b frontend/tsconfig.app.json && vite build frontend",
+    "preview": "vite preview frontend"
+  },
+  "dependencies": {
+    "lucide-react": "latest",
+    "marked": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+}
