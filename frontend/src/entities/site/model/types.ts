@@ -8,7 +8,14 @@ export type SiteSettings = {
   footer_text: string;
   icp_number: string;
   github_url: string;
+  github_handle: string;
   email: string;
+  wechat_handle: string;
+  wechat_url: string;
+  douyin_handle: string;
+  douyin_url: string;
+  xiaohongshu_handle: string;
+  xiaohongshu_url: string;
 };
 
 export type Dashboard = {
@@ -18,4 +25,3 @@ export type Dashboard = {
   published: number;
   recent_posts: Post[];
 };
-

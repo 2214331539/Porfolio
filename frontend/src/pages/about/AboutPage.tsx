@@ -1,16 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Code2, Download, ExternalLink, FileText, MessageCircle, Music2, Send } from 'lucide-react';
 import type { ResumeVersion } from '../../entities/resume/model/types';
 import { contentApi } from '../../features/content/api/content-api';
-
-const platforms = [
-  { name: '微信公众号', handle: '小潘的数字花园', href: 'https://weixin.qq.com/', icon: MessageCircle, tone: 'wechat' },
-  { name: '抖音', handle: '@小潘', href: 'https://www.douyin.com/', icon: Music2, tone: 'douyin' },
-  { name: '小红书', handle: '@小潘', href: 'https://www.xiaohongshu.com/', icon: Send, tone: 'xiaohongshu' },
-  { name: 'GitHub', handle: '@xiaopan', href: 'https://github.com/', icon: Code2, tone: 'github' },
-];
+import { SiteContext } from '../../app/providers/site-provider';
 
 export default function AboutPage() {
+  const { settings } = useContext(SiteContext);
   const cached = contentApi.getCachedResumeVersions();
   const [versions, setVersions] = useState<ResumeVersion[]>(cached ?? []);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -18,6 +13,12 @@ export default function AboutPage() {
   const [error, setError] = useState('');
   const trackRef = useRef<HTMLDivElement>(null);
   const scrollFrameRef = useRef(0);
+  const platforms = [
+    { name: '微信公众号', handle: settings?.wechat_handle || '小潘的数字花园', href: settings?.wechat_url || 'https://weixin.qq.com/', icon: MessageCircle, tone: 'wechat' },
+    { name: '抖音', handle: settings?.douyin_handle || '@小潘', href: settings?.douyin_url || 'https://www.douyin.com/', icon: Music2, tone: 'douyin' },
+    { name: '小红书', handle: settings?.xiaohongshu_handle || '@小潘', href: settings?.xiaohongshu_url || 'https://www.xiaohongshu.com/', icon: Send, tone: 'xiaohongshu' },
+    { name: 'GitHub', handle: settings?.github_handle || '@xiaopan', href: settings?.github_url || 'https://github.com/', icon: Code2, tone: 'github' },
+  ];
 
   useEffect(() => {
     contentApi.listResumeVersions()

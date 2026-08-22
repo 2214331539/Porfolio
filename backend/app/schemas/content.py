@@ -58,3 +58,7 @@ class TokenOut(BaseModel): access_token: str; token_type: str = "bearer"
 class SiteSettings(BaseModel):
     site_title: str = "纸上见山"; site_description: str = "记录代码、设计与日常。"; hero_kicker: str = "A quiet corner on the internet"
     mottos: list[str] = ["慢慢来，比较快。"]; footer_text: str = "写作、创造，偶尔发呆。"; icp_number: str = ""; github_url: str = "https://github.com/"; email: str = "hello@example.com"
+    wechat_handle: str = "小潘的数字花园"; wechat_url: str = "https://weixin.qq.com/"
+    douyin_handle: str = "@小潘"; douyin_url: str = "https://www.douyin.com/"
+    xiaohongshu_handle: str = "@小潘"; xiaohongshu_url: str = "https://www.xiaohongshu.com/"
+    github_handle: str = "@xiaopan"

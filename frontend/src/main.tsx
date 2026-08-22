@@ -9,5 +9,6 @@ import './app/styles/navigation-overrides.css';
 import './app/styles/about-resume.css';
 import './app/styles/apple-polish.css';
 import './app/styles/admin-overrides.css';
+import './app/styles/admin-redesign.css';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><App/></StrictMode>);
