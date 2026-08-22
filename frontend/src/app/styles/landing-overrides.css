@@ -1,7 +1,10 @@
 /* Final landing balance pass */
 .landing-shell{scroll-snap-type:none;scroll-behavior:smooth;overscroll-behavior:contain;touch-action:pan-y}
 .landing-panel{scroll-snap-stop:normal;background:var(--paper)!important}
-.hero-typewriter{font-size:min(3.4vw,44px);white-space:nowrap;color:var(--ink)!important;opacity:1!important;visibility:visible;letter-spacing:-.06em}
+.hero-copy{min-width:0}
+.hero-typewriter{width:100%;max-width:100%;min-width:0;font-size:clamp(30px,3.4vw,44px);line-height:1.22;white-space:normal;overflow-wrap:anywhere;word-break:normal;color:var(--ink)!important;opacity:1!important;visibility:visible;letter-spacing:-.06em}
+.hero-typewriter>.typewriter-text{display:inline;white-space:normal}
+.hero-typewriter .typewriter-tail{display:inline;white-space:nowrap}
 .landing-panel .section-head{margin:0 0 28px;min-height:0}
 .landing-panel .section-head>div,.landing-panel .section-head>.text-link{display:none}
 .landing-content .content-section{height:100%;padding:72px 28px;display:flex;align-items:center}
@@ -18,5 +21,5 @@
 .brand-logo,.footer-logo,.landing-footer img{border:0!important;background:transparent;padding:0;mix-blend-mode:multiply}
 html[data-theme=dark] .brand-logo,html[data-theme=dark] .footer-logo,html[data-theme=dark] .landing-footer img{filter:invert(1);mix-blend-mode:screen}
 .landing-footer{border-top:1px solid var(--line)}
-@media(max-width:900px){.hero-typewriter{font-size:min(4.5vw,40px)}.landing-content .content-section{padding:66px 22px}.landing-content .masonry-posts{height:58vh}.landing-content .post-card h3{font-size:18px}}
-@media(max-width:680px){.hero-typewriter{font-size:clamp(19px,5.4vw,32px);letter-spacing:-.07em}.landing-content .content-section,.notes-preview .content-section{padding:70px 18px}.landing-content .masonry-posts{height:58vh;display:grid}.landing-content .post-card{min-height:0!important;padding:15px}.landing-content .post-card h3{font-size:16px}.notes-preview .notes-grid{max-height:50vh}}
+@media(max-width:900px){.hero-typewriter{font-size:clamp(27px,4.5vw,40px)}.landing-content .content-section{padding:66px 22px}.landing-content .masonry-posts{height:58vh}.landing-content .post-card h3{font-size:18px}}
+@media(max-width:680px){.hero-typewriter{font-size:clamp(26px,8vw,34px);line-height:1.26;letter-spacing:-.055em}.landing-content .content-section,.notes-preview .content-section{padding:70px 18px}.landing-content .masonry-posts{height:58vh;display:grid}.landing-content .post-card{min-height:0!important;padding:15px}.landing-content .post-card h3{font-size:16px}.notes-preview .notes-grid{max-height:50vh}}

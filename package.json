@@ -4,13 +4,18 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "sync:pdfjs": "node scripts/sync-pdfjs-assets.mjs",
+    "predev": "npm run sync:pdfjs",
     "dev": "vite frontend",
+    "prebuild": "npm run sync:pdfjs",
     "build": "tsc -b frontend/tsconfig.app.json && vite build frontend",
+    "prepreview": "npm run sync:pdfjs",
     "preview": "vite preview frontend"
   },
   "dependencies": {
     "lucide-react": "latest",
     "marked": "latest",
+    "pdfjs-dist": "^6.2.108",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",

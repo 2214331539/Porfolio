@@ -892,6 +892,82 @@ html[data-admin-theme=dark] .admin-ui-root {
   border-radius: var(--admin-radius-sm);
 }
 
+.resume-dropzone {
+  position: relative;
+  padding: 14px;
+  gap: 12px;
+  border-style: dashed;
+  background: color-mix(in srgb, var(--admin-subtle) 78%, var(--admin-card));
+  transition: border-color .18s ease, background-color .18s ease, box-shadow .24s ease;
+}
+
+.resume-dropzone::after {
+  position: absolute;
+  z-index: 3;
+  inset: 5px;
+  border: 1px solid transparent;
+  border-radius: calc(var(--admin-radius-sm) - 3px);
+  content: '';
+  pointer-events: none;
+  transition: border-color .18s ease;
+}
+
+.resume-dropzone.is-dragging {
+  border-color: var(--admin-ink);
+  background: color-mix(in srgb, var(--admin-ink) 5%, var(--admin-card));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--admin-ink) 7%, transparent);
+}
+
+.resume-dropzone.is-dragging::after { border-color: color-mix(in srgb, var(--admin-ink) 22%, transparent); }
+.resume-dropzone.is-uploading { opacity: .72; }
+
+.resume-dropzone > .resume-dropzone-intro {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.resume-dropzone-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  border: 1px solid var(--admin-line);
+  border-radius: 10px;
+  background: var(--admin-card);
+  color: var(--admin-muted);
+}
+
+.resume-dropzone-icon svg { width: 16px; height: 16px; }
+.resume-dropzone-intro > div { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.resume-dropzone-intro strong { font-size: 12px; }
+.resume-dropzone-intro small { line-height: 1.5; }
+.resume-dropzone.is-dragging .resume-dropzone-icon { border-color: var(--admin-ink); color: var(--admin-ink); }
+
+.resume-dropzone-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.resume-dropzone-actions > span {
+  color: var(--admin-muted);
+  font-size: 10px;
+}
+
+.resume-dropzone-picker {
+  min-width: 132px;
+  flex: 0 0 auto;
+  padding-right: 13px;
+  padding-left: 13px;
+  border-style: solid;
+  background: var(--admin-card);
+}
+
+.resume-dropzone-picker input:disabled { cursor: wait; }
+
 .resume-pdf-ready a,
 .resume-pdf-ready button {
   color: var(--admin-muted);
@@ -1200,6 +1276,8 @@ html[data-admin-theme=dark] .admin-ui-root {
   .post-editor-meta { grid-template-columns: 1fr; }
   .note-media-grid { grid-template-columns: 1fr 1fr; }
   .settings-platform-row { grid-template-columns: 1fr; }
+  .resume-dropzone-actions { align-items: stretch; flex-direction: column; }
+  .resume-dropzone-picker { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

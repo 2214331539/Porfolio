@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { Download, FileText, Plus, Save, Trash2, Upload, X } from 'lucide-react';
 import type { ResumeStatus, ResumeVersion } from '../../entities/resume/model/types';
 import { contentApi } from '../../features/content/api/content-api';
@@ -48,6 +48,105 @@ function draftFromVersion(version: ResumeVersion): ResumeDraft {
   };
 }
 
+type ResumeDropzoneProps = {
+  kind: 'image' | 'pdf';
+  title: string;
+  hint: string;
+  accept: string;
+  buttonLabel: string;
+  uploading: boolean;
+  onFile: (file: File) => Promise<void>;
+  onInvalid: (message: string) => void;
+  children?: ReactNode;
+};
+
+function ResumeDropzone({ kind, title, hint, accept, buttonLabel, uploading, onFile, onInvalid, children }: ResumeDropzoneProps) {
+  const [dragging, setDragging] = useState(false);
+  const dragDepth = useRef(0);
+
+  function validate(file: File) {
+    if (kind === 'image') {
+      const isImage = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
+      return isImage ? '' : '请拖入 JPG、PNG 或 WebP 图片';
+    }
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    if (!isPdf) return '请拖入 PDF 文件';
+    if (file.size > 15 * 1024 * 1024) return 'PDF 文件不能超过 15MB';
+    return '';
+  }
+
+  function chooseFile(file: File | undefined) {
+    if (!file || uploading) return;
+    const validationError = validate(file);
+    if (validationError) {
+      onInvalid(validationError);
+      return;
+    }
+    void onFile(file);
+  }
+
+  function handleDragEnter(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    if (uploading || !event.dataTransfer.types.includes('Files')) return;
+    dragDepth.current += 1;
+    setDragging(true);
+  }
+
+  function handleDragOver(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = uploading ? 'none' : 'copy';
+  }
+
+  function handleDragLeave(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    dragDepth.current = Math.max(0, dragDepth.current - 1);
+    if (!dragDepth.current) setDragging(false);
+  }
+
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    dragDepth.current = 0;
+    setDragging(false);
+    chooseFile(event.dataTransfer.files[0]);
+  }
+
+  return (
+    <div
+      className={`resume-upload-field resume-dropzone ${kind} ${dragging ? 'is-dragging' : ''} ${uploading ? 'is-uploading' : ''}`}
+      role="group"
+      aria-label={`${title}上传区域`}
+      aria-busy={uploading}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      <div className="resume-dropzone-intro">
+        <span className="resume-dropzone-icon"><Upload aria-hidden="true" /></span>
+        <div><strong>{dragging ? '松开鼠标开始上传' : title}</strong><small>{dragging ? `已识别文件，松开即可上传${kind === 'pdf' ? ' PDF' : '图片'}` : hint}</small></div>
+      </div>
+      {children}
+      <div className="resume-dropzone-actions">
+        <label className="cover-file-input resume-dropzone-picker">
+          <Upload aria-hidden="true" />
+          <span>{uploading ? '上传中…' : buttonLabel}</span>
+          <input
+            type="file"
+            accept={accept}
+            onChange={(event) => {
+              const input = event.currentTarget;
+              chooseFile(input.files?.[0]);
+              input.value = '';
+            }}
+            disabled={uploading}
+          />
+        </label>
+        <span>或将文件拖入此区域</span>
+      </div>
+    </div>
+  );
+}
+
 export function ResumeVersionsAdmin() {
   const [versions, setVersions] = useState<ResumeVersion[]>([]);
   const [draft, setDraft] = useState<ResumeDraft>(emptyDraft);
@@ -62,6 +161,11 @@ export function ResumeVersionsAdmin() {
   const draftSnapshot = JSON.stringify(draft);
   const isDirty = draftSnapshot !== savedSnapshot;
   useAdminDirtyState(isDirty);
+
+  function showUploadError(message: string) {
+    setError(message);
+    notify(message, 'error');
+  }
 
   async function refresh() {
     const items = await contentApi.listResumeVersions(true);
@@ -212,17 +316,31 @@ export function ResumeVersionsAdmin() {
           <label>版本日期<input type="date" value={draft.version_date} onChange={(event) => setDraft((value) => ({ ...value, version_date: event.target.value }))} /></label>
           <label>版本说明<textarea name="resume-description" autoComplete="off" value={draft.description} onChange={(event) => setDraft((value) => ({ ...value, description: event.target.value }))} placeholder="简要说明这一版本的侧重点或更新内容…" /></label>
 
-          <div className="resume-upload-field">
-            <div><strong>简历图片</strong><small>推荐上传清晰的长图或 A4 页面截图</small></div>
+          <ResumeDropzone
+            kind="image"
+            title="简历图片"
+            hint="推荐上传清晰的长图或 A4 页面截图"
+            accept="image/jpeg,image/png,image/webp"
+            buttonLabel={draft.image_url ? '更换图片' : '选择简历图片'}
+            uploading={uploadingImage}
+            onFile={uploadImage}
+            onInvalid={showUploadError}
+          >
             {draft.image_url ? <img src={draft.image_url} alt="简历预览" /> : null}
-            <label className="cover-file-input"><Upload /><span>{uploadingImage ? '上传中…' : draft.image_url ? '更换图片' : '上传简历图片'}</span><input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => uploadImage(event.target.files?.[0])} disabled={uploadingImage} /></label>
-          </div>
+          </ResumeDropzone>
 
-          <div className="resume-upload-field">
-            <div><strong>PDF 文件（可选）</strong><small>最大 15MB，上传后前台将显示下载按钮</small></div>
+          <ResumeDropzone
+            kind="pdf"
+            title="PDF 文件（可选）"
+            hint="最大 15MB，上传后支持前台高清阅读与下载"
+            accept="application/pdf,.pdf"
+            buttonLabel={draft.pdf_url ? '更换 PDF' : '选择 PDF'}
+            uploading={uploadingPdf}
+            onFile={uploadPdf}
+            onInvalid={showUploadError}
+          >
             {draft.pdf_url ? <div className="resume-pdf-ready"><Download /><span>PDF 已就绪</span><a href={draft.pdf_url} target="_blank" rel="noreferrer">查看</a><button type="button" onClick={() => setDraft((value) => ({ ...value, pdf_url: '' }))}>移除</button></div> : null}
-            <label className="cover-file-input"><Upload /><span>{uploadingPdf ? '上传中…' : draft.pdf_url ? '更换 PDF' : '上传 PDF'}</span><input type="file" accept="application/pdf,.pdf" onChange={(event) => uploadPdf(event.target.files?.[0])} disabled={uploadingPdf} /></label>
-          </div>
+          </ResumeDropzone>
 
           <label>发布状态<select value={draft.status} onChange={(event) => setDraft((value) => ({ ...value, status: event.target.value as ResumeStatus, is_current: event.target.value === 'draft' ? false : value.is_current }))}><option value="draft">草稿</option><option value="published">已发布</option></select></label>
           <label className="admin-checkbox"><input type="checkbox" checked={draft.is_current} onChange={(event) => setDraft((value) => ({ ...value, is_current: event.target.checked, status: event.target.checked ? 'published' : value.status }))} />设为当前最新版</label>

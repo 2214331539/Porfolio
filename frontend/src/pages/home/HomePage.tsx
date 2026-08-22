@@ -9,9 +9,35 @@ import type { Post } from '../../entities/post/model/types';
 import { NoteCard, PostCard, SectionHead } from '../../shared/ui';
 
 function Typewriter({ mottos }: { mottos: string[] }) {
-  const phrases = useMemo(() => mottos.filter(Boolean), [mottos]); const [text, setText] = useState(''); const [index, setIndex] = useState(0); const [deleting, setDeleting] = useState(false);
-  useEffect(() => { if (!phrases.length) return; const target = phrases[index % phrases.length]; const wait = !deleting && text === target ? 2200 : deleting && !text ? 400 : deleting ? 45 : 100; const timer = setTimeout(() => { if (!deleting && text === target) setDeleting(true); else if (deleting && !text) { setDeleting(false); setIndex(i => i + 1); } else setText(target.slice(0, text.length + (deleting ? -1 : 1))); }, wait); return () => clearTimeout(timer); }, [deleting, index, phrases, text]);
-  return phrases.length ? <span>{text}<i className="caret"/></span> : null;
+  const phrases = useMemo(() => mottos.filter(Boolean), [mottos]);
+  const [text, setText] = useState('');
+  const [index, setIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!phrases.length) return undefined;
+    const target = phrases[index % phrases.length];
+    const wait = !deleting && text === target ? 2200 : deleting && !text ? 400 : deleting ? 45 : 100;
+    const timer = window.setTimeout(() => {
+      if (!deleting && text === target) setDeleting(true);
+      else if (deleting && !text) {
+        setDeleting(false);
+        setIndex((value) => value + 1);
+      } else {
+        setText(target.slice(0, text.length + (deleting ? -1 : 1)));
+      }
+    }, wait);
+    return () => window.clearTimeout(timer);
+  }, [deleting, index, phrases, text]);
+
+  if (!phrases.length) return null;
+  const tailStart = Math.max(0, text.length - 2);
+  return (
+    <span className="typewriter-text">
+      {text.slice(0, tailStart)}
+      <span className="typewriter-tail">{text.slice(tailStart)}<i className="caret" aria-hidden="true" /></span>
+    </span>
+  );
 }
 
 export default function HomePage() {
