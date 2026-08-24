@@ -1,5 +1,5 @@
 from uuid import uuid4
-from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from PIL import Image
 from sqlalchemy.orm import Session
 from app.api.deps import get_current_admin
@@ -49,13 +49,13 @@ def delete_note(note_id: int, db: Session = Depends(get_db)): ContentService(db)
 @router.put('/settings', response_model=SiteSettings)
 def update_settings(payload: SiteSettings, db: Session = Depends(get_db)): return ContentService(db).update_settings(payload)
 @router.post('/upload')
-def upload_image(request: Request, file: UploadFile = File(...), _: AdminUser = Depends(get_current_admin)):
+def upload_image(file: UploadFile = File(...), _: AdminUser = Depends(get_current_admin)):
     if file.content_type not in {'image/jpeg', 'image/png', 'image/webp'}: raise HTTPException(400, '仅支持 JPG、PNG、WebP')
     UPLOADS_DIR.mkdir(exist_ok=True); filename = f'{uuid4().hex}.webp'
     with Image.open(file.file) as image: image.thumbnail((2000, 2000)); image.convert('RGB').save(UPLOADS_DIR / filename, 'WEBP', quality=84, method=6)
-    return {'url': f'{str(request.base_url).rstrip("/")}/uploads/{filename}'}
+    return {'url': f'/uploads/{filename}'}
 @router.post('/upload-document')
-def upload_document(request: Request, file: UploadFile = File(...), _: AdminUser = Depends(get_current_admin)):
+def upload_document(file: UploadFile = File(...), _: AdminUser = Depends(get_current_admin)):
     if file.content_type != 'application/pdf' or not file.filename or not file.filename.lower().endswith('.pdf'): raise HTTPException(400, '仅支持 PDF 文件')
     file.file.seek(0, 2); size = file.file.tell(); file.file.seek(0)
     if size > 15 * 1024 * 1024: raise HTTPException(400, 'PDF 文件不能超过 15MB')
@@ -63,4 +63,4 @@ def upload_document(request: Request, file: UploadFile = File(...), _: AdminUser
     file.file.seek(0); UPLOADS_DIR.mkdir(exist_ok=True); filename = f'{uuid4().hex}.pdf'
     with (UPLOADS_DIR / filename).open('wb') as target:
         while chunk := file.file.read(1024 * 1024): target.write(chunk)
-    return {'url': f'{str(request.base_url).rstrip("/")}/uploads/{filename}'}
+    return {'url': f'/uploads/{filename}'}

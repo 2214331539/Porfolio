@@ -1,4 +1,10 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api';
+const configuredApiBaseUrl = import.meta.env.VITE_API_URL?.trim();
+
+if (!configuredApiBaseUrl) {
+  throw new Error('缺少 VITE_API_URL，请在前端环境变量文件中配置 API 地址。');
+}
+
+const API_BASE_URL = configuredApiBaseUrl.replace(/\/+$/, '');
 const TOKEN_KEY = 'inkfold_token';
 
 export const apiUrl = (path: string) => `${API_BASE_URL}${path}`;

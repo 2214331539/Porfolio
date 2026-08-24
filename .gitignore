@@ -4,6 +4,8 @@ frontend/dist/
 frontend/public/pdfjs/
 *.tsbuildinfo
 .env
+.env.*
+!**/.env.example
 .venv/
 __pycache__/
 *.pyc
