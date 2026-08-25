@@ -11,24 +11,30 @@ import { NoteCard, PostCard, SectionHead } from '../../shared/ui';
 function Typewriter({ mottos }: { mottos: string[] }) {
   const phrases = useMemo(() => mottos.filter(Boolean), [mottos]);
   const [text, setText] = useState('');
-  const [index, setIndex] = useState(0);
+  const [phraseIndex, setPhraseIndex] = useState(() => (phrases.length ? Math.floor(Math.random() * phrases.length) : 0));
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!phrases.length) return undefined;
-    const target = phrases[index % phrases.length];
+    const target = phrases[phraseIndex % phrases.length];
     const wait = !deleting && text === target ? 2200 : deleting && !text ? 400 : deleting ? 45 : 100;
     const timer = window.setTimeout(() => {
       if (!deleting && text === target) setDeleting(true);
       else if (deleting && !text) {
         setDeleting(false);
-        setIndex((value) => value + 1);
+        setPhraseIndex((current) => {
+          const normalized = current % phrases.length;
+          if (phrases.length <= 1) return normalized;
+          let next = normalized;
+          while (next === normalized) next = Math.floor(Math.random() * phrases.length);
+          return next;
+        });
       } else {
         setText(target.slice(0, text.length + (deleting ? -1 : 1)));
       }
     }, wait);
     return () => window.clearTimeout(timer);
-  }, [deleting, index, phrases, text]);
+  }, [deleting, phraseIndex, phrases, text]);
 
   if (!phrases.length) return null;
   const tailStart = Math.max(0, text.length - 2);
