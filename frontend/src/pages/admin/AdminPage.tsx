@@ -20,7 +20,6 @@ import {
   Settings,
   Sun,
   Trash2,
-  Upload,
   X,
 } from "lucide-react";
 import { marked } from "marked";
@@ -44,6 +43,7 @@ import { Stat } from "../../shared/ui";
 import { RepositorySelect } from "../../features/content/ui/RepositorySelect";
 import { RepositoriesAdmin } from "./RepositoriesAdmin";
 import { ResumeVersionsAdmin } from "./ResumeVersionsAdmin";
+import { AdminImageDropzone } from "./AdminImageDropzone";
 import { AdminUiProvider, useAdminDirtyState, useAdminUi } from "./AdminUi";
 
 type AdminTheme = "light" | "dark";
@@ -441,7 +441,7 @@ function PostEditor() {
       );
   }, [editingId]);
   async function uploadCover(file: File | undefined) {
-    if (!file) return;
+    if (!file || uploadingCover) return;
     setUploadingCover(true);
     setError("");
     try {
@@ -558,28 +558,19 @@ function PostEditor() {
           />
         </label>
         <section className="post-editor-meta" aria-label="文章属性">
-          <div className="cover-upload-box">
-            <div className="cover-upload-heading">
-              <div>
-                <strong>文章封面</strong>
-                <small>图片会上传到后端 uploads 目录，不使用前端 public 静态资源。</small>
-              </div>
-              {coverUrl ? (
-                <button type="button" onClick={() => setCoverUrl("")}>移除封面</button>
-              ) : null}
-            </div>
+          <AdminImageDropzone
+            className="cover-upload-box"
+            title="文章封面"
+            hint="支持 JPG、PNG、WebP；也可以直接把图片拖到这里"
+            buttonLabel={coverUrl ? "更换封面" : "选择封面"}
+            uploading={uploadingCover}
+            onFiles={(files) => uploadCover(files[0])}
+            onInvalid={(message) => { setError(message); notify(message, "error"); }}
+            onClear={coverUrl ? () => setCoverUrl("") : undefined}
+            clearLabel="移除封面"
+          >
             {coverUrl ? <img className="cover-preview" src={coverUrl} alt="文章封面预览" /> : null}
-            <label className="cover-file-input">
-              <Upload />
-              <span>{uploadingCover ? "正在上传…" : coverUrl ? "更换封面" : "上传封面"}</span>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={(event) => uploadCover(event.target.files?.[0])}
-                disabled={uploadingCover}
-              />
-            </label>
-          </div>
+          </AdminImageDropzone>
           <label>
             标签 <small>多个标签用逗号分隔</small>
             <input value={tagNames} onChange={(event) => setTagNames(event.target.value)} placeholder="React, 设计" />
@@ -760,12 +751,12 @@ function NotesAdmin() {
       setSearchParams(note ? { edit: String(note.id) } : {}, { replace: true });
     });
   }
-  async function upload(files: FileList | null) {
-    if (!files?.length) return;
+  async function upload(files: readonly File[]) {
+    if (!files.length || uploading) return;
     setUploading(true);
     setError("");
     try {
-      const results = await Promise.allSettled(Array.from(files).map((file) => contentApi.uploadImage(file)));
+      const results = await Promise.allSettled(files.map((file) => contentApi.uploadImage(file)));
       const uploaded = results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
       setDraft((value) => ({
         ...value,
@@ -930,8 +921,17 @@ function NotesAdmin() {
               }
             />
           </label>
-          <section className="note-media-manager" aria-labelledby="note-media-heading">
-            <div className="note-media-heading"><div><strong id="note-media-heading">图片</strong><small>首张图片会作为列表封面，可调整顺序。</small></div><label className="cover-file-input"><Upload /><span>{uploading ? "上传中…" : "上传图片"}</span><input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(event) => upload(event.target.files)} disabled={uploading} /></label></div>
+          <section className="note-media-manager" aria-label="图文图片管理">
+            <AdminImageDropzone
+              className="note-image-dropzone"
+              title="图文图片"
+              hint="首张图片作为列表封面；支持多选或一次拖入多张"
+              buttonLabel="选择图片"
+              uploading={uploading}
+              multiple
+              onFiles={upload}
+              onInvalid={(message) => { setError(message); notify(message, "error"); }}
+            />
             {draft.images.length ? <div className="note-media-grid">{draft.images.map((url, index) => (
               <figure key={`${url}-${index}`}><img src={url} alt={`图文图片 ${index + 1}`} loading="lazy" /><figcaption><span>{index === 0 ? '首图' : String(index + 1).padStart(2, '0')}</span><div><button type="button" onClick={() => moveImage(index, -1)} disabled={index === 0} aria-label={`将第 ${index + 1} 张图片前移`}><ArrowLeft /></button><button type="button" onClick={() => moveImage(index, 1)} disabled={index === draft.images.length - 1} aria-label={`将第 ${index + 1} 张图片后移`}><ArrowRight /></button><button type="button" onClick={() => setDraft((value) => ({ ...value, images: value.images.filter((_, imageIndex) => imageIndex !== index) }))} aria-label={`移除第 ${index + 1} 张图片`}><X /></button></div></figcaption></figure>
             ))}</div> : <div className="note-media-empty"><Image /><span>还没有图片</span></div>}
