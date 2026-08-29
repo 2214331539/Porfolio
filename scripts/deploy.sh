@@ -2,10 +2,13 @@
 
 set -Eeuo pipefail
 
+# uv lives in ~/.local/bin, which non-login shells (e.g. CI over SSH) may not have on PATH.
+export PATH="$HOME/.local/bin:${PATH}"
+
 DEPLOY_BRANCH="${DEPLOY_BRANCH:-main}"
 DEPLOY_REMOTE="${DEPLOY_REMOTE:-origin}"
 DEPLOY_SERVICE="${DEPLOY_SERVICE:-portfolio-api.service}"
-DEPLOY_HEALTH_URL="${DEPLOY_HEALTH_URL:-http://127.0.0.1:8000/api/health}"
+DEPLOY_HEALTH_URL="${DEPLOY_HEALTH_URL:-http://127.0.0.1:8002/api/health}"
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 APP_DIR="$(cd -- "${SCRIPT_DIR}/.." && pwd)"

@@ -9,7 +9,9 @@ import {
 } from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+// ?v=2:2026-08-25 修复 nginx MIME(worker 此前以 octet-stream 返回)后,强制浏览器
+// 绕过 immutable 缓存重新拉取 worker。worker 文件名是内容哈希,不随服务端配置变化。
+GlobalWorkerOptions.workerSrc = `${pdfWorkerUrl}?v=2`;
 const PDFJS_ASSET_BASE = new URL(`${import.meta.env.BASE_URL}pdfjs/`, document.baseURI).href;
 
 type ResumePdfViewerProps = {
