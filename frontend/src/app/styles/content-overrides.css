@@ -56,6 +56,22 @@
 .article-prose a{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
 .article-prose ul,.article-prose ol{padding-left:1.35em}
 .article-prose li{padding-left:.3em;margin:.5em 0}
+.markdown-body h4,.markdown-body h5,.markdown-body h6{line-height:1.45;margin:2em 0 .75em}
+.markdown-body h4{font-size:1.08em}
+.markdown-body h5,.markdown-body h6{font-size:1em}
+.markdown-body hr{height:1px;margin:2.7em 0;border:0;background:var(--line)}
+.markdown-body :not(pre)>code{padding:.18em .42em;border-radius:5px;background:var(--paper-2);color:color-mix(in srgb,var(--ink) 92%,var(--paper));overflow-wrap:anywhere}
+.markdown-body pre code{font-size:inherit;color:inherit;background:transparent}
+.markdown-body del{color:var(--muted);text-decoration-thickness:1px}
+.markdown-body table{display:block;width:100%;margin:2em 0;border-collapse:collapse;overflow-x:auto;font-size:.92em}
+.markdown-body th,.markdown-body td{min-width:8em;padding:.7em .85em;border:1px solid var(--line);text-align:left;vertical-align:top}
+.markdown-body th{background:var(--paper-2);font-weight:650}
+.markdown-body tbody tr:nth-child(even){background:color-mix(in srgb,var(--paper-2) 55%,transparent)}
+.markdown-body .task-list-item{list-style:none}
+.markdown-body input[type='checkbox']{margin:0 .6em 0 -1.3em;accent-color:var(--ink)}
+.markdown-body .katex{font-size:1.08em}
+.markdown-body .katex-display{max-width:100%;margin:1.9em 0;padding:.45em 0;overflow-x:auto;overflow-y:hidden}
+.markdown-body .katex-error{color:var(--red);font-family:var(--apple-mono,monospace);font-size:.88em}
 .refined-article .article-nav{max-width:720px;margin-left:auto;margin-right:auto}
 .refined-note .note-body h1{font-size:clamp(28px,3.5vw,44px);line-height:1.35;letter-spacing:-.045em;margin:20px 0}
 .refined-note .note-detail-grid{align-items:start}

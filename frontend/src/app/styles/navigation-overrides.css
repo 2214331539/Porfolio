@@ -5,6 +5,11 @@
 .header-search-control>svg{width:16px;height:16px;flex:0 0 auto;color:var(--muted)}
 .header-search-control input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font-size:13px}
 .header-search-control input::placeholder{color:var(--muted)}
+.page-loading-indicator{min-height:100vh;padding:76px 20px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted)}
+.page-loading-spinner{width:24px;height:24px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:page-loading-spin .75s linear infinite}
+@keyframes page-loading-spin{to{transform:rotate(1turn)}}
+@media(max-width:680px){.page-loading-indicator{padding-top:64px}}
+@media(prefers-reduced-motion:reduce){.page-loading-spinner{animation-duration:1.5s}}
 .header-search-control button{width:28px;height:28px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
 .header-search-control button:hover{background:var(--paper-2);color:var(--ink)}
 .header-search-control button svg{width:15px}

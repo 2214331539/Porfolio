@@ -17,9 +17,9 @@
 }
 
 .public-site-shell,
-.public-site-shell *,
-.public-site-shell *::before,
-.public-site-shell *::after {
+.public-site-shell *:not(.katex):not(.katex *),
+.public-site-shell *:not(.katex):not(.katex *)::before,
+.public-site-shell *:not(.katex):not(.katex *)::after {
   font-family: var(--apple-font) !important;
 }
 

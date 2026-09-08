@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Minus, Plus } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { marked } from 'marked';
 import { contentApi } from '../../features/content/api/content-api';
 import type { Post } from '../../entities/post/model/types';
+import { renderMarkdown } from '../../shared/markdown';
 import { Metadata } from '../../shared/ui';
 
 export default function PostPage() {
@@ -44,7 +44,7 @@ export default function PostPage() {
     };
   }, []);
 
-  const html = useMemo(() => marked.parse(post?.content || '') as string, [post?.content]);
+  const html = useMemo(() => renderMarkdown(post?.content || ''), [post?.content]);
   const neighbors = useMemo(() => {
     if (!post) return {};
     const repositoryId = post.repository?.id ?? post.repository_id ?? null;

@@ -13,8 +13,11 @@
     "preview": "vite preview frontend"
   },
   "dependencies": {
+    "dompurify": "^3.4.15",
+    "katex": "^0.18.7",
     "lucide-react": "latest",
     "marked": "latest",
+    "marked-katex-extension": "^5.1.12",
     "pdfjs-dist": "^6.2.108",
     "react": "latest",
     "react-dom": "latest",

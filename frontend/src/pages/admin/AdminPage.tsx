@@ -22,7 +22,6 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { marked } from "marked";
 import {
   Link,
   NavLink,
@@ -39,6 +38,7 @@ import type { Post } from "../../entities/post/model/types";
 import type { ContentRepository } from "../../entities/repository/model/types";
 import type { Dashboard, SiteSettings } from "../../entities/site/model/types";
 import { SiteContext } from "../../app/providers/site-provider";
+import { renderMarkdown } from "../../shared/markdown";
 import { Stat } from "../../shared/ui";
 import { RepositorySelect } from "../../features/content/ui/RepositorySelect";
 import { RepositoriesAdmin } from "./RepositoriesAdmin";
@@ -412,7 +412,7 @@ function PostEditor() {
   const [savedSnapshot, setSavedSnapshot] = useState(emptySnapshot);
   const draftSnapshot = useMemo(() => JSON.stringify([title, excerpt, coverUrl, tagNames, repositoryId, isPinned, isPrivate, content]), [content, coverUrl, excerpt, isPinned, isPrivate, repositoryId, tagNames, title]);
   const isDirty = draftSnapshot !== savedSnapshot;
-  const previewHtml = useMemo(() => marked.parse(content || "_正文预览会显示在这里。_") as string, [content]);
+  const previewHtml = useMemo(() => renderMarkdown(content || "_正文预览会显示在这里。_"), [content]);
   useAdminDirtyState(isDirty);
   useEffect(() => {
     contentApi
@@ -650,6 +650,50 @@ function PostEditor() {
             }}
           >
             图片
+          </button>
+          <button
+            type="button"
+            title="引用"
+            aria-label="插入引用"
+            onClick={(e) => {
+              e.preventDefault();
+              insertMarkdown("> ", "", "引用内容");
+            }}
+          >
+            “
+          </button>
+          <button
+            type="button"
+            title="无序列表"
+            aria-label="插入无序列表"
+            onClick={(e) => {
+              e.preventDefault();
+              insertMarkdown("- ", "", "列表项");
+            }}
+          >
+            • 列表
+          </button>
+          <button
+            type="button"
+            title="行内公式"
+            aria-label="插入行内数学公式"
+            onClick={(e) => {
+              e.preventDefault();
+              insertMarkdown("$", "$", "E = mc^2");
+            }}
+          >
+            $x$
+          </button>
+          <button
+            type="button"
+            title="块级公式"
+            aria-label="插入块级数学公式"
+            onClick={(e) => {
+              e.preventDefault();
+              insertMarkdown("\n$$\n", "\n$$\n", "E \\in \\mathbb{R}^{V \\times d}");
+            }}
+          >
+            $$
           </button>
           </div>
           <textarea

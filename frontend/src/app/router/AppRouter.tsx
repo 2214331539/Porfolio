@@ -11,7 +11,7 @@ const NotePage = lazy(() => import('../../pages/notes/NotePage'));
 const AboutPage = lazy(() => import('../../pages/about/AboutPage'));
 const AdminPage = lazy(() => import('../../pages/admin/AdminPage'));
 
-function PageLoading() { return <div className="page-loading"><img src="/assets/black_medium.png" alt=""/><span>正在翻页…</span></div>; }
+function PageLoading() { return <div className="page-loading page-loading-indicator" role="status" aria-live="polite"><span className="page-loading-spinner" aria-hidden="true"/><span>正在翻页…</span></div>; }
 function NotFound() { return <div className="not-found"><img src="/assets/black_line.png" alt=""/><p className="eyebrow">404 / LOST PAGE</p><h1>这一页还没写。</h1><Link className="text-link" to="/">回到首页 <ArrowUpRight/></Link></div>; }
 function DeferredPage({ children }: { children: React.ReactNode }) { return <Suspense fallback={<PageLoading/>}>{children}</Suspense>; }
 
