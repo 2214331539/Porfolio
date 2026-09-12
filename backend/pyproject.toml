@@ -1,7 +1,7 @@
 [project]
-name = "inkfold-backend"
+name = "xiaopan-backend"
 version = "1.0.0"
-description = "Inkfold portfolio backend"
+description = "小潘同学个人内容站后端"
 requires-python = ">=3.13"
 dependencies = [
   "fastapi==0.116.1",
@@ -18,3 +18,4 @@ dependencies = [
 
 [tool.uv]
 package = false
+

@@ -1,4 +1,4 @@
-"""Create the initial Inkfold schema.
+"""Create the initial 小潘同学 schema.
 
 Revision ID: 20260820_0001
 Revises:
@@ -120,4 +120,5 @@ def downgrade() -> None:
     op.drop_table("admin_users")
     op.drop_table("tags")
     op.drop_table("categories")
+
 

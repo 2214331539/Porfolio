@@ -1,4 +1,4 @@
-"""Initialize data required by a fresh Inkfold installation.
+"""Initialize data required by a fresh 小潘同学 installation.
 
 This module is intentionally not called by FastAPI startup. Run it explicitly
 after applying Alembic migrations:
@@ -50,3 +50,4 @@ if __name__ == "__main__":
     with SessionLocal() as db:
         seed(db)
     print("基础数据初始化完成")
+

@@ -1,5 +1,5 @@
 {
-  "name": "inkfold-portfolio",
+  "name": "xiaopan-portfolio",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -30,3 +30,4 @@
     "typescript": "latest"
   }
 }
+

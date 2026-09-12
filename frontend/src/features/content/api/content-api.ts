@@ -13,14 +13,21 @@ let publicNotesRequest: Promise<Note[]> | undefined;
 const publicRepositoryRequests = new Map<RepositoryContentType, Promise<ContentRepository[]>>();
 let publicResumeCache: ResumeVersion[] | undefined;
 let publicResumeRequest: Promise<ResumeVersion[]> | undefined;
+const PUBLIC_CACHE_TTL = 30_000;
+const cacheTimes = new Map<string, number>();
+const fresh = (key: string) => cacheTimes.has(key) && Date.now() - (cacheTimes.get(key) ?? 0) < PUBLIC_CACHE_TTL;
+const assetUrl = (value: string | null | undefined) => value && value.startsWith('/') ? apiUrl(value) : value;
+const normalizePost = (post: Post) => ({ ...post, cover_url: assetUrl(post.cover_url) });
+const normalizeNote = (note: Note) => ({ ...note, images: note.images.map((image) => assetUrl(image) ?? image) });
+const normalizeResume = (version: ResumeVersion) => ({ ...version, image_url: assetUrl(version.image_url) ?? version.image_url, pdf_url: assetUrl(version.pdf_url) });
 
 function listPublicPosts() {
-  if (publicPostsCache) return Promise.resolve(publicPostsCache);
+  if (publicPostsCache && fresh('posts')) return Promise.resolve(publicPostsCache);
   if (!publicPostsRequest) {
     publicPostsRequest = http<Post[]>('/posts')
       .then((posts) => {
-        publicPostsCache = posts;
-        return posts;
+        publicPostsCache = posts.map(normalizePost); cacheTimes.set('posts', Date.now());
+        return publicPostsCache;
       })
       .finally(() => { publicPostsRequest = undefined; });
   }
@@ -28,12 +35,12 @@ function listPublicPosts() {
 }
 
 function listPublicNotes() {
-  if (publicNotesCache) return Promise.resolve(publicNotesCache);
+  if (publicNotesCache && fresh('notes')) return Promise.resolve(publicNotesCache);
   if (!publicNotesRequest) {
     publicNotesRequest = http<Note[]>('/notes')
       .then((notes) => {
-        publicNotesCache = notes;
-        return notes;
+        publicNotesCache = notes.map(normalizeNote); cacheTimes.set('notes', Date.now());
+        return publicNotesCache;
       })
       .finally(() => { publicNotesRequest = undefined; });
   }
@@ -42,12 +49,12 @@ function listPublicNotes() {
 
 function listPublicRepositories(contentType: RepositoryContentType) {
   const cached = publicRepositoryCache.get(contentType);
-  if (cached) return Promise.resolve(cached);
+  if (cached && fresh(`repositories:${contentType}`)) return Promise.resolve(cached);
   const pending = publicRepositoryRequests.get(contentType);
   if (pending) return pending;
   const request = http<ContentRepository[]>(`/repositories?content_type=${contentType}`)
     .then((repositories) => {
-      publicRepositoryCache.set(contentType, repositories);
+      publicRepositoryCache.set(contentType, repositories); cacheTimes.set(`repositories:${contentType}`, Date.now());
       return repositories;
     })
     .finally(() => { publicRepositoryRequests.delete(contentType); });
@@ -56,18 +63,19 @@ function listPublicRepositories(contentType: RepositoryContentType) {
 }
 
 function invalidatePublicContent(contentType: RepositoryContentType) {
-  if (contentType === 'post') publicPostsCache = undefined;
-  else publicNotesCache = undefined;
+  if (contentType === 'post') { publicPostsCache = undefined; cacheTimes.delete('posts'); }
+  else { publicNotesCache = undefined; cacheTimes.delete('notes'); }
   publicRepositoryCache.delete(contentType);
+  cacheTimes.delete(`repositories:${contentType}`);
 }
 
 function listPublicResumeVersions() {
-  if (publicResumeCache) return Promise.resolve(publicResumeCache);
+  if (publicResumeCache && fresh('resumes')) return Promise.resolve(publicResumeCache);
   if (!publicResumeRequest) {
     publicResumeRequest = http<ResumeVersion[]>('/resumes')
       .then((versions) => {
-        publicResumeCache = versions;
-        return versions;
+        publicResumeCache = versions.map(normalizeResume); cacheTimes.set('resumes', Date.now());
+        return publicResumeCache;
       })
       .finally(() => { publicResumeRequest = undefined; });
   }
@@ -99,9 +107,9 @@ export const contentApi = {
   async deleteNote(id: number) { const result = await http<{ ok: boolean }>(`/admin/notes/${id}`, { method: 'DELETE' }); invalidatePublicContent('note'); return result; },
   async saveRepository(repository: RepositoryInput) { const saved = await http<ContentRepository>(repository.id ? `/admin/repositories/${repository.id}` : '/admin/repositories', { method: repository.id ? 'PUT' : 'POST', body: JSON.stringify(repository) }); invalidatePublicContent(repository.content_type); return saved; },
   async deleteRepository(id: number, contentType?: RepositoryContentType) { const result = await http<{ ok: boolean }>(`/admin/repositories/${id}`, { method: 'DELETE' }); if (contentType) invalidatePublicContent(contentType); else publicRepositoryCache.clear(); return result; },
-  async saveResumeVersion(version: Partial<ResumeVersion>) { const saved = await http<ResumeVersion>(version.id ? `/admin/resumes/${version.id}` : '/admin/resumes', { method: version.id ? 'PUT' : 'POST', body: JSON.stringify(version) }); publicResumeCache = undefined; return saved; },
-  async deleteResumeVersion(id: number) { const result = await http<{ ok: boolean }>(`/admin/resumes/${id}`, { method: 'DELETE' }); publicResumeCache = undefined; return result; },
-  uploadImage: (file: File) => { const body = new FormData(); body.append('file', file); return http<{ url: string }>('/admin/upload', { method: 'POST', body }); },
-  uploadDocument: (file: File) => { const body = new FormData(); body.append('file', file); return http<{ url: string }>('/admin/upload-document', { method: 'POST', body }); },
+  async saveResumeVersion(version: Partial<ResumeVersion>) { const saved = await http<ResumeVersion>(version.id ? `/admin/resumes/${version.id}` : '/admin/resumes', { method: version.id ? 'PUT' : 'POST', body: JSON.stringify(version) }); publicResumeCache = undefined; cacheTimes.delete('resumes'); return saved; },
+  async deleteResumeVersion(id: number) { const result = await http<{ ok: boolean }>(`/admin/resumes/${id}`, { method: 'DELETE' }); publicResumeCache = undefined; cacheTimes.delete('resumes'); return result; },
+  uploadImage: async (file: File) => { const body = new FormData(); body.append('file', file); const result = await http<{ url: string }>('/admin/upload', { method: 'POST', body }); return { ...result, url: assetUrl(result.url) ?? result.url }; },
+  uploadDocument: async (file: File) => { const body = new FormData(); body.append('file', file); const result = await http<{ url: string }>('/admin/upload-document', { method: 'POST', body }); return { ...result, url: assetUrl(result.url) ?? result.url }; },
   likeNote: (id: number) => http<Note>(`/notes/${id}/like`, { method: 'POST' }),
 };

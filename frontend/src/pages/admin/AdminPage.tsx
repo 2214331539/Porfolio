@@ -516,9 +516,7 @@ function PostEditor() {
           <span className={`save-state ${isDirty ? "dirty" : ""}`}>
             {saving ? "正在保存…" : isDirty ? "有未保存更改" : editingId ? "所有更改已保存" : "新文章"}
           </span>
-          <button type="button" className="admin-button secondary" onClick={() => setPreviewOpen((value) => !value)} aria-pressed={previewOpen}>
-            {previewOpen ? "关闭预览" : "预览"}
-          </button>
+          <span className="editor-preview-status">实时预览</span>
           {postSlug ? <a className="admin-button secondary" href={`/blog/${postSlug}`} target="_blank" rel="noreferrer">查看页面</a> : null}
           <button type="button" className="admin-button secondary" onClick={() => submit("draft")} disabled={saving}>
             保存草稿
@@ -581,7 +579,7 @@ function PostEditor() {
             <label className="admin-checkbox"><input type="checkbox" checked={isPrivate} onChange={(event) => setIsPrivate(event.target.checked)} />仅后台可见</label>
           </div>
         </section>
-        <div className={`editor-writing-layout ${previewOpen ? "with-preview" : ""}`}>
+        <div className="editor-writing-layout with-preview">
           <div className="editor-writing-pane">
           <div
             className="editor-toolbar"
@@ -705,7 +703,7 @@ function PostEditor() {
             spellCheck
           />
           </div>
-          {previewOpen ? <article className="admin-markdown-preview markdown-body" aria-label="文章预览" dangerouslySetInnerHTML={{ __html: previewHtml }} /> : null}
+          <article className="admin-markdown-preview markdown-body" aria-label="文章实时预览" dangerouslySetInnerHTML={{ __html: previewHtml }} />
         </div>
       </div>
     </div>

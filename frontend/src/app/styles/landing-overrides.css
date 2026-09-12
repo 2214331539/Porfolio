@@ -12,6 +12,13 @@
 .landing-content .post-card,.landing-content .post-card.large{min-height:0;height:100%;padding:20px}
 .landing-content .post-card h3{font-size:clamp(18px,1.7vw,25px);margin-top:15px}
 .landing-content .post-card-foot{margin-top:14px;padding-top:10px}
+.landing-content .post-card{padding:18px 20px}
+.landing-content .post-card-top{font-size:9px;opacity:.72}
+.landing-content .post-card-copy{margin-top:auto}
+.landing-content .post-card h3{font-size:clamp(17px,1.55vw,23px);line-height:1.24;margin:12px 0 7px;letter-spacing:-.045em}
+.landing-content .post-card p{display:block;font-size:12px;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;opacity:.72}
+.landing-content .post-card-foot{font-size:10px;opacity:.72}
+.landing-content .post-card.large h3{font-size:clamp(23px,2.3vw,34px)}
 .notes-preview{background:var(--paper)!important}
 .notes-preview .notes-grid{max-height:53vh;gap:14px}
 .notes-preview .note-card{margin-bottom:14px}

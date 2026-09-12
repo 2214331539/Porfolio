@@ -1,4 +1,4 @@
-# 纸上见山
+# 小潘同学
 
 一个 React + TypeScript + FastAPI + PostgreSQL 的个人内容站点与后台 CMS。
 
@@ -52,3 +52,4 @@ uv lock --check
 ```
 
 前端所有内容均通过 API 获取。接口不可用时会显示错误状态，不会回退到静态 Mock 数据。
+

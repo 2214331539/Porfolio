@@ -9,7 +9,7 @@ from app.schemas.content import NoteOut, PostOut, RepositoryOut, ResumeVersionOu
 from app.services.content_service import ContentService
 router = APIRouter(tags=['public'])
 @router.get('/health')
-def health(): return {'status': 'ok', 'service': 'inkfold'}
+def health(): return {'status': 'ok', 'service': 'xiaopan'}
 @router.get('/resumes', response_model=list[ResumeVersionOut])
 def list_resume_versions(db: Session = Depends(get_db)): return ContentService(db).list_public_resume_versions()
 @router.get('/resumes/{resume_id}/download')
@@ -39,3 +39,4 @@ def get_note(note_id: int, db: Session = Depends(get_db)): return ContentService
 def like_note(note_id: int, db: Session = Depends(get_db)): return ContentService(db).like_note(note_id)
 @router.get('/settings', response_model=SiteSettings)
 def get_settings(db: Session = Depends(get_db)): return ContentService(db).get_settings()
+

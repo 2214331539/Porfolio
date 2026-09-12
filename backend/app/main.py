@@ -17,7 +17,7 @@ mimetypes.add_type("image/webp", ".webp")
 
 def create_app() -> FastAPI:
     application = FastAPI(
-        title="Inkfold API",
+        title="小潘同学 API",
         version="1.0.0",
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
@@ -38,3 +38,4 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+

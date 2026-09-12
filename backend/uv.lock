@@ -287,7 +287,7 @@ wheels = [
 ]
 
 [[package]]
-name = "inkfold-backend"
+name = "xiaopan-backend"
 version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
@@ -895,3 +895,4 @@ wheels = [
     { url = "https://mirrors.aliyun.com/pypi/packages/5b/24/a585e7573e128070605d003b5544729bcd58d9756c7e99d550818ca4b916/websockets-17.0.1-cp314-cp314t-win_arm64.whl", hash = "sha256:dbfae8e75b342e31fc6fd1a8bbb393b7cbb91d6cfd581650300a94381e7b7e2b" },
     { url = "https://mirrors.aliyun.com/pypi/packages/09/ce/3929538b2b9918f5eee623fbf3346893973191f6df93f19bbda097bd7bb7/websockets-17.0.1-py3-none-any.whl", hash = "sha256:c6be9cba65c65cc76dfa3d4619e359ff02a4476c74e179b215236c11a0b32345" },
 ]
+
