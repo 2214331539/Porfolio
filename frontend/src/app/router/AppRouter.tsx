@@ -9,10 +9,11 @@ const HomePage = lazy(() => import('../../pages/home/HomePage'));
 const PostPage = lazy(() => import('../../pages/blog/PostPage'));
 const NotePage = lazy(() => import('../../pages/notes/NotePage'));
 const AboutPage = lazy(() => import('../../pages/about/AboutPage'));
+const PortfolioPage = lazy(() => import('../../pages/portfolio/PortfolioPage'));
 const AdminPage = lazy(() => import('../../pages/admin/AdminPage'));
 
 function PageLoading() { return <div className="page-loading page-loading-indicator" role="status" aria-live="polite"><span className="page-loading-spinner" aria-hidden="true"/><span>正在翻页…</span></div>; }
 function NotFound() { return <div className="not-found"><img src="/assets/black_line.png" alt=""/><p className="eyebrow">404 / LOST PAGE</p><h1>这一页还没写。</h1><Link className="text-link" to="/">回到首页 <ArrowUpRight/></Link></div>; }
 function DeferredPage({ children }: { children: React.ReactNode }) { return <Suspense fallback={<PageLoading/>}>{children}</Suspense>; }
 
-export function AppRouter() { return <Routes><Route element={<SiteLayout/>}><Route path="/" element={<DeferredPage><HomePage/></DeferredPage>}/><Route path="/blog" element={<BlogPage/>}/><Route path="/blog/:slug" element={<DeferredPage><PostPage/></DeferredPage>}/><Route path="/notes" element={<NotesPage/>}/><Route path="/notes/:id" element={<DeferredPage><NotePage/></DeferredPage>}/><Route path="/about" element={<DeferredPage><AboutPage/></DeferredPage>}/><Route path="/404" element={<NotFound/>}/><Route path="*" element={<Navigate to="/404" replace/>}/></Route><Route path="/admin/*" element={<DeferredPage><AdminPage/></DeferredPage>}/></Routes>; }
+export function AppRouter() { return <Routes><Route element={<SiteLayout/>}><Route path="/" element={<DeferredPage><HomePage/></DeferredPage>}/><Route path="/blog" element={<BlogPage/>}/><Route path="/blog/:slug" element={<DeferredPage><PostPage/></DeferredPage>}/><Route path="/notes" element={<NotesPage/>}/><Route path="/notes/:id" element={<DeferredPage><NotePage/></DeferredPage>}/><Route path="/portfolio" element={<DeferredPage><PortfolioPage/></DeferredPage>}/><Route path="/about" element={<DeferredPage><AboutPage/></DeferredPage>}/><Route path="/404" element={<NotFound/>}/><Route path="*" element={<Navigate to="/404" replace/>}/></Route><Route path="/admin/*" element={<DeferredPage><AdminPage/></DeferredPage>}/></Routes>; }

@@ -137,6 +137,7 @@ function Header() {
       <nav className={isOpen ? 'nav-links open' : 'nav-links'}>
         <NavLink to="/blog" onPointerEnter={prefetchPosts} onFocus={prefetchPosts} onClick={() => setIsOpen(false)}>文章</NavLink>
         <NavLink to="/notes" onPointerEnter={prefetchNotes} onFocus={prefetchNotes} onClick={() => setIsOpen(false)}>图文</NavLink>
+        <NavLink to="/portfolio" onClick={() => setIsOpen(false)}>作品集</NavLink>
         <NavLink to="/about" onClick={() => setIsOpen(false)}>关于 <ArrowUpRight size={13} /></NavLink>
       </nav>
       <div className="header-actions">

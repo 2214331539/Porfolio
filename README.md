@@ -1,5 +1,11 @@
 # 小潘同学
 
+## 分支与功能开发
+
+`main` 保留经过验证的可用版本，`dev` 用于新功能开发与验收。功能在 `dev` 上完成构建和交互检查后，再合并到 `main` 并部署；现有部署脚本默认拉取 `main`。
+
+作品集入口为 `/portfolio`。个人项目资料集中在 `frontend/src/entities/project/model/projects.ts`，当前包含 Couploc、SoundTag、Cooking、Impromptu 和 Shopify 独立站插件。未提供真实截图的作品使用标注为“概念插画”的展示图；补充 `screenshots` 后会显示可横向浏览的截图，补充 `url` 后会显示访问作品按钮。此版本的作品资料由源文件维护。
+
 一个 React + TypeScript + FastAPI + PostgreSQL 的个人内容站点与后台 CMS。
 
 文章与图文均通过可无限嵌套的内容仓库归档。后台可创建、移动、排序和删除空仓库，并在内容编辑器中将条目分配到任意层级；旧文章分类会在数据库迁移时自动转为顶层文章仓库。
