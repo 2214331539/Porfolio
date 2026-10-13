@@ -4,7 +4,9 @@
 
 `main` 保留经过验证的可用版本，`dev` 用于新功能开发与验收。功能在 `dev` 上完成构建和交互检查后，再合并到 `main` 并部署；现有部署脚本默认拉取 `main`。
 
-作品集入口为 `/portfolio`。个人项目资料集中在 `frontend/src/entities/project/model/projects.ts`，当前包含 Couploc、SoundTag、Cooking、Impromptu 和 Shopify 独立站插件。未提供真实截图的作品展示简洁的图标与文字卡片；补充 `screenshots` 后会显示可横向浏览的截图，补充 `url` 后会显示访问作品按钮。此版本的作品资料由源文件维护。
+作品集入口为 `/portfolio`，管理入口为 `/admin/portfolio`。后台可编辑页面标题与个人介绍，新建、编辑、删除作品，维护图标、简介、详细介绍、类别、标签和访问链接，并按展示顺序排列作品。草稿只在后台显示，切换为已发布并保存后才会出现在前台。作品截图支持批量上传、调整顺序和填写说明；前台可横向浏览、点击放大，也可用方向键切换、Esc 退出。没有截图或访问链接时，相应区域不会显示。
+
+作品集使用独立数据库表。首次升级需要在 `backend` 目录执行 `uv run alembic upgrade head`，迁移 `20261013_0006` 会一次性保留原有个人介绍和 Couploc、SoundTag、Cooking、Impromptu、Shopify 五个作品，之后以后台保存的内容为准，重启不会恢复已删除作品。部署时应先备份数据库，应用迁移，再更新后端与前端；该功能在 `dev` 验收完成后再合入 `main`。作品资料接口不使用浏览器缓存，返回前台页面时会重新读取已发布内容。上传文件使用独立文件名，替换图标或截图后不会沿用旧图片地址。
 
 一个 React + TypeScript + FastAPI + PostgreSQL 的个人内容站点与后台 CMS。
 
@@ -28,6 +30,7 @@ cd backend
 Copy-Item .env.example .env
 # 根据本机 PostgreSQL 修改 .env
 uv sync
+uv run alembic upgrade head
 uv run python run.py
 ```
 
@@ -54,6 +57,7 @@ npm run dev
 npm run build
 cd backend
 uv run python -m compileall -q app
+uv run --with httpx python -m unittest discover -s tests -v
 uv lock --check
 ```
 

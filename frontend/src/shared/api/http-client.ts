@@ -30,7 +30,9 @@ export async function http<T>(path: string, init: RequestInit = {}): Promise<T> 
   });
   if (!response.ok) {
     const payload = await response.json().catch(() => null);
-    throw new ApiError(payload?.detail ?? '请求失败', response.status);
+    const detail = payload?.detail;
+    const message = typeof detail === 'string' ? detail : Array.isArray(detail) ? detail.map((item: { msg?: string }) => item.msg || '请检查填写内容').join('；') : '请求失败';
+    throw new ApiError(message, response.status);
   }
   return response.json() as Promise<T>;
 }

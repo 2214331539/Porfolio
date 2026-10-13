@@ -43,6 +43,7 @@ import { Stat } from "../../shared/ui";
 import { RepositorySelect } from "../../features/content/ui/RepositorySelect";
 import { RepositoriesAdmin } from "./RepositoriesAdmin";
 import { ResumeVersionsAdmin } from "./ResumeVersionsAdmin";
+import { PortfolioAdmin, PortfolioProfileEditor, PortfolioProjectEditor } from "./PortfolioAdmin";
 import { AdminImageDropzone } from "./AdminImageDropzone";
 import { AdminUiProvider, useAdminDirtyState, useAdminUi } from "./AdminUi";
 
@@ -191,6 +192,7 @@ function Sidebar({ logout, theme, onToggleTheme, onNavigate }: { logout: () => v
           <FolderTree />
           仓库
         </NavLink>
+        <NavLink to="/admin/portfolio" onClick={(event) => handleNavigation(event, "/admin/portfolio")}><BookOpen />作品集</NavLink>
         <NavLink to="/admin/resumes" onClick={(event) => handleNavigation(event, "/admin/resumes")}>
           <Files />
           简历
@@ -1227,6 +1229,10 @@ export default function AdminPage() {
             <Route path="notes" element={<NotesAdmin />} />
             <Route path="repositories" element={<RepositoriesAdmin />} />
             <Route path="resumes" element={<ResumeVersionsAdmin />} />
+            <Route path="portfolio" element={<PortfolioAdmin />} />
+            <Route path="portfolio/profile" element={<PortfolioProfileEditor />} />
+            <Route path="portfolio/new" element={<PortfolioProjectEditor />} />
+            <Route path="portfolio/:id" element={<PortfolioProjectEditor />} />
             <Route path="settings" element={<SettingsView />} />
           </Routes>
         </main>

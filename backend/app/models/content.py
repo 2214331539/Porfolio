@@ -99,6 +99,29 @@ class SiteSetting(Base):
     data: Mapped[dict] = mapped_column(JSON, default=dict)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
 
+class PortfolioProfile(Base):
+    __tablename__ = 'portfolio_profile'
+    id: Mapped[int] = mapped_column(primary_key=True, default=1)
+    title: Mapped[str] = mapped_column(String(120), default='小潘同学')
+    introduction: Mapped[str] = mapped_column(Text, default='')
+
+class Project(Base):
+    __tablename__ = 'projects'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(80), unique=True)
+    name: Mapped[str] = mapped_column(String(120))
+    summary: Mapped[str] = mapped_column(String(300), default='')
+    category: Mapped[str] = mapped_column(String(100), default='')
+    description: Mapped[str] = mapped_column(Text, default='')
+    icon_key: Mapped[str] = mapped_column(String(30), default='default')
+    icon_url: Mapped[str] = mapped_column(String(500), default='')
+    url: Mapped[str] = mapped_column(String(500), default='')
+    link_label: Mapped[str] = mapped_column(String(30), default='访问作品')
+    keywords: Mapped[list[str]] = mapped_column(JSON, default=list)
+    screenshots: Mapped[list[dict]] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(20), default='draft')
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+
 class AdminUser(Base):
     __tablename__ = "admin_users"
     id: Mapped[int] = mapped_column(primary_key=True)

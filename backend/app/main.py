@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api.routes import admin, auth, public
+from app.api.routes import admin, auth, public, portfolio
 from app.core.config import BASE_DIR, settings
 
 UPLOADS_DIR = BASE_DIR.parent.parent / "uploads"
@@ -34,6 +34,8 @@ def create_app() -> FastAPI:
     application.include_router(public.router, prefix="/api")
     application.include_router(auth.router, prefix="/api")
     application.include_router(admin.router, prefix="/api")
+    application.include_router(portfolio.router, prefix="/api")
+    application.include_router(portfolio.admin_router, prefix="/api")
     return application
 
 

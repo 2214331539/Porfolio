@@ -38,7 +38,7 @@ export function AdminImageDropzone({
     const files = Array.from(fileList);
     if (!files.length) return;
     if (!multiple && files.length > 1) {
-      onInvalid('文章封面每次只能上传一张图片');
+      onInvalid(`${title}每次只能上传一张图片`);
       return;
     }
 
@@ -90,7 +90,7 @@ export function AdminImageDropzone({
         <span className="admin-image-dropzone-icon"><ImagePlus aria-hidden="true" /></span>
         <div>
           <strong>{dragging ? '松开鼠标，立即上传' : title}</strong>
-          <small>{dragging ? multiple ? '已识别图片，可一次上传多张' : '已识别图片，将作为文章封面' : hint}</small>
+          <small>{dragging ? multiple ? '已识别图片，可一次上传多张' : `已识别图片，将用于${title}` : hint}</small>
         </div>
         {onClear ? <button className="admin-image-dropzone-clear" type="button" onClick={onClear}>{clearLabel}</button> : null}
       </div>

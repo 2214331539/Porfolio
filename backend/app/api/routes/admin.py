@@ -1,6 +1,6 @@
 from uuid import uuid4
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
-from PIL import Image
+from PIL import Image, ImageOps, UnidentifiedImageError
 from sqlalchemy.orm import Session
 from app.api.deps import get_current_admin
 from app.core.config import BASE_DIR
@@ -51,8 +51,20 @@ def update_settings(payload: SiteSettings, db: Session = Depends(get_db)): retur
 @router.post('/upload')
 def upload_image(file: UploadFile = File(...), _: AdminUser = Depends(get_current_admin)):
     if file.content_type not in {'image/jpeg', 'image/png', 'image/webp'}: raise HTTPException(400, '仅支持 JPG、PNG、WebP')
+    file.file.seek(0, 2); size = file.file.tell(); file.file.seek(0)
+    if size > 10 * 1024 * 1024: raise HTTPException(400, '图片不能超过 10MB')
     UPLOADS_DIR.mkdir(exist_ok=True); filename = f'{uuid4().hex}.webp'
-    with Image.open(file.file) as image: image.thumbnail((2000, 2000)); image.convert('RGB').save(UPLOADS_DIR / filename, 'WEBP', quality=84, method=6)
+    try:
+        with Image.open(file.file) as source:
+            if source.format not in {'JPEG', 'PNG', 'WEBP'}: raise HTTPException(400, '仅支持 JPG、PNG、WebP')
+            if source.width * source.height > 40_000_000: raise HTTPException(400, '图片分辨率过大，请缩小后上传')
+            image = ImageOps.exif_transpose(source)
+            image.thumbnail((2000, 2000))
+            mode = 'RGBA' if 'A' in image.getbands() or 'transparency' in image.info else 'RGB'
+            image.convert(mode).save(UPLOADS_DIR / filename, 'WEBP', quality=84, method=6)
+    except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError) as error:
+        (UPLOADS_DIR / filename).unlink(missing_ok=True)
+        raise HTTPException(400, '图片无法读取，请选择有效的 JPG、PNG 或 WebP') from error
     return {'url': f'/uploads/{filename}'}
 @router.post('/upload-document')
 def upload_document(file: UploadFile = File(...), _: AdminUser = Depends(get_current_admin)):
