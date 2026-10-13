@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "yita",
+    "name": "Yita翻译App",
+    "summary": "让翻译融入日常阅读的轻量工具。",
+    "category": "桌面应用 · 翻译",
+    "keywords": ["翻译", "阅读", "效率"],
+    "url": "https://github.com/2214331539/Yita"
+  },
+  {
+    "slug": "daily-information",
+    "name": "日常新闻",
+    "summary": "把日常关注的信息汇集到一个阅读空间。",
+    "category": "桌面应用 · 信息阅读",
+    "keywords": ["新闻", "订阅", "阅读"],
+    "url": "https://github.com/2214331539/Daily-Information"
+  },
+  {
+    "slug": "token-gift",
+    "name": "Token礼物包",
+    "summary": "把 AI 使用额度与配置指南，整理成可分享的礼物包。",
+    "category": "网站 · Token 分发",
+    "keywords": ["Token", "AI", "分享"],
+    "url": "https://github.com/2214331539/TokenGift"
+  },
+  {
+    "slug": "impromptu",
+    "name": "Impromptu",
+    "summary": "为口语练习而做的网站。",
+    "category": "网站 · 学习",
+    "keywords": ["口语", "练习", "表达"],
+    "url": "https://github.com/2214331539/impromptu"
+  },
+  {
+    "slug": "learn2ai",
+    "name": "Learn2ai",
+    "summary": "围绕课程资料、AI 协作与学习任务的教学工作空间。",
+    "category": "应用 · AI 教育",
+    "keywords": ["AI", "教学", "学习"],
+    "url": "https://github.com/2214331539/learn2ai"
+  },
+  {
+    "slug": "creatorhub",
+    "name": "creatorHub",
+    "summary": "为内容创作者提供文章转图片等实用工具。",
+    "category": "网站 · 创作工具",
+    "keywords": ["自媒体", "排版", "创作"],
+    "url": "https://github.com/shorpan-Liam/CreatorHub"
+  }
+]

@@ -8,6 +8,8 @@
 
 作品集使用独立数据库表。首次升级需要在 `backend` 目录执行 `uv run alembic upgrade head`，迁移 `20261013_0006` 会一次性保留原有个人介绍和 Couploc、SoundTag、Cooking、Impromptu、Shopify 五个作品，之后以后台保存的内容为准，重启不会恢复已删除作品。部署时应先备份数据库，应用迁移，再更新后端与前端；该功能在 `dev` 验收完成后再合入 `main`。作品资料接口不使用浏览器缓存，返回前台页面时会重新读取已发布内容。上传文件使用独立文件名，替换图标或截图后不会沿用旧图片地址。
 
+2026-10-13 补充的 Yita翻译App、日常新闻、Token礼物包、Impromptu、Learn2ai 和 creatorHub 资料保存在 `backend/app/db/data/portfolio_projects.json`，按钮统一为「查看 GitHub」。在 `backend` 目录执行 `uv run python -m app.db.import_portfolio` 可预览，追加 `--apply` 才写入当前配置的数据库。导入按作品标识匹配，已有作品仅更新链接和按钮文字，保留介绍、截图、发布状态和顺序；新作品追加到列表末尾。该命令不会随服务启动自动执行，日常修改仍使用后台。Learn2ai 的仓库目前为私有，访问需要相应 GitHub 权限。
+
 一个 React + TypeScript + FastAPI + PostgreSQL 的个人内容站点与后台 CMS。
 
 文章与图文均通过可无限嵌套的内容仓库归档。后台可创建、移动、排序和删除空仓库，并在内容编辑器中将条目分配到任意层级；旧文章分类会在数据库迁移时自动转为顶层文章仓库。
