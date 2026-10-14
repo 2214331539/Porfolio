@@ -38,15 +38,16 @@ export function RepositoryBrowser({ repositories, currentId, contentLabel, onSel
         <div className="repository-grid">
           {children.map((repository) => (
             <button className="repository-card" type="button" key={repository.id} onClick={() => onSelect(repository.id)}>
-              <span className="repository-folder"><Folder /></span>
+              <span className="repository-folder" aria-hidden="true"><Folder strokeWidth={1.6}/></span>
               <span className="repository-card-copy">
                 <strong>{repository.name}</strong>
-                <small>{repository.description || '打开这个仓库'}</small>
+                {repository.description ? <small>{repository.description}</small> : null}
               </span>
               <span className="repository-count">
-                {repository.child_count ? `${repository.child_count} 个子仓库 · ` : ''}{repository.item_count} 篇
+                <span>{repository.item_count} {contentLabel === '图文' ? '条图文' : '篇文章'}</span>
+                {repository.child_count ? <span>{repository.child_count} 个子仓库</span> : null}
               </span>
-              <ChevronRight />
+              <span className="repository-card-arrow" aria-hidden="true"><ChevronRight strokeWidth={1.7}/></span>
             </button>
           ))}
         </div>

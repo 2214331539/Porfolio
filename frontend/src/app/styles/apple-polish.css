@@ -103,11 +103,11 @@
   transition: background-color .18s ease, transform .3s var(--apple-ease);
 }
 
-.public-site-shell :where(.post-card, .note-card, .repository-card, .platform-card, .resume-stage, .resume-document, .resume-image-link, .article-cover, .gallery) {
+.public-site-shell :where(.post-card, .note-card, .platform-card, .resume-stage, .resume-document, .resume-image-link, .article-cover, .gallery) {
   border-radius: var(--apple-radius-card);
 }
 
-.public-site-shell :where(.post-card, .note-card, .repository-card, .platform-card, .resume-document) {
+.public-site-shell :where(.post-card, .note-card, .platform-card, .resume-document) {
   box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
   transition: transform .55s var(--apple-ease), box-shadow .55s var(--apple-ease), border-color .25s ease, background-color .25s ease;
   will-change: transform;
@@ -197,7 +197,7 @@
     transform: translateX(2px);
   }
 
-  .public-site-shell :where(.post-card, .repository-card, .platform-card, .resume-document):hover {
+  .public-site-shell :where(.post-card, .platform-card, .resume-document):hover {
     transform: translateY(-4px) scale(1.006);
     box-shadow: var(--apple-shadow-card);
   }
@@ -211,7 +211,7 @@
     transform: translateY(36px) scale(1.006);
   }
 
-  .public-site-shell :where(.post-card, .note-card, .repository-card, .resume-document):hover :where(.post-visual img, .note-image img, .repository-card-cover img, .resume-preview img) {
+  .public-site-shell :where(.post-card, .note-card, .resume-document):hover :where(.post-visual img, .note-image img, .repository-card-cover img, .resume-preview img) {
     transform: scale(1.025);
   }
 }
