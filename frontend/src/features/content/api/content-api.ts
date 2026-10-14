@@ -16,7 +16,10 @@ let publicResumeRequest: Promise<ResumeVersion[]> | undefined;
 const PUBLIC_CACHE_TTL = 30_000;
 const cacheTimes = new Map<string, number>();
 const fresh = (key: string) => cacheTimes.has(key) && Date.now() - (cacheTimes.get(key) ?? 0) < PUBLIC_CACHE_TTL;
-const assetUrl = (value: string | null | undefined) => value && value.startsWith('/') ? apiUrl(value) : value;
+// Uploaded files live at the API server's origin, outside its /api prefix.
+const assetUrl = (value: string | null | undefined) => value && value.startsWith('/')
+  ? new URL(value, new URL(apiUrl('/'), window.location.origin)).href
+  : value;
 const normalizePost = (post: Post) => ({ ...post, cover_url: assetUrl(post.cover_url) });
 const normalizeNote = (note: Note) => ({ ...note, images: note.images.map((image) => assetUrl(image) ?? image) });
 const normalizeResume = (version: ResumeVersion) => ({ ...version, image_url: assetUrl(version.image_url) ?? version.image_url, pdf_url: assetUrl(version.pdf_url) });
