@@ -17,6 +17,7 @@ import {
   Plus,
   Search,
   Save,
+  Server,
   Settings,
   Sun,
   Trash2,
@@ -46,6 +47,7 @@ import { ResumeVersionsAdmin } from "./ResumeVersionsAdmin";
 import { PortfolioAdmin, PortfolioProfileEditor, PortfolioProjectEditor } from "./PortfolioAdmin";
 import { AdminImageDropzone } from "./AdminImageDropzone";
 import { AdminUiProvider, useAdminDirtyState, useAdminUi } from "./AdminUi";
+import { ServerDeckAdmin } from "./ServerDeckAdmin";
 
 type AdminTheme = "light" | "dark";
 const ADMIN_THEME_KEY = "inkfold_admin_theme";
@@ -193,6 +195,7 @@ function Sidebar({ logout, theme, onToggleTheme, onNavigate }: { logout: () => v
           仓库
         </NavLink>
         <NavLink to="/admin/portfolio" onClick={(event) => handleNavigation(event, "/admin/portfolio")}><BookOpen />作品集</NavLink>
+        <NavLink to="/admin/server-deck" onClick={(event) => handleNavigation(event, "/admin/server-deck")}><Server />服务器</NavLink>
         <NavLink to="/admin/resumes" onClick={(event) => handleNavigation(event, "/admin/resumes")}>
           <Files />
           简历
@@ -1233,6 +1236,7 @@ export default function AdminPage() {
             <Route path="portfolio/profile" element={<PortfolioProfileEditor />} />
             <Route path="portfolio/new" element={<PortfolioProjectEditor />} />
             <Route path="portfolio/:id" element={<PortfolioProjectEditor />} />
+            <Route path="server-deck" element={<ServerDeckAdmin />} />
             <Route path="settings" element={<SettingsView />} />
           </Routes>
         </main>

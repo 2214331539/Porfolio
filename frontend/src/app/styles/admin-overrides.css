@@ -164,3 +164,58 @@ html[data-admin-theme=dark] .repository-type-tabs button.active{background:var(-
 .resume-version-save{width:100%;margin-top:3px}
 @media(max-width:1000px){.resume-admin-layout{grid-template-columns:1fr}.resume-version-editor{position:static}}
 @media(max-width:680px){.resume-admin-row{grid-template-columns:52px minmax(0,1fr)}.resume-admin-row>img{width:52px;height:68px}.resume-admin-row-actions{grid-column:2}.resume-editor-options{grid-template-columns:1fr}}
+/* Server Deck is an isolated operations workspace; keep its dark visual system inside the frame. */
+.server-deck-admin {
+  min-width: 0;
+}
+
+.server-deck-admin-title {
+  margin-bottom: 22px;
+}
+
+.server-deck-frame-shell {
+  position: relative;
+  min-height: min(820px, calc(100vh - 150px));
+  overflow: hidden;
+  border: 1px solid var(--admin-line, #deded9);
+  border-radius: 24px;
+  background: #171721;
+  box-shadow: 0 18px 50px rgb(20 20 28 / 10%);
+}
+
+.server-deck-frame-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #aaaabd;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.server-deck-frame-loading svg {
+  width: 18px;
+  height: 18px;
+}
+
+.server-deck-frame {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  min-height: min(820px, calc(100vh - 150px));
+  height: min(820px, calc(100vh - 150px));
+  border: 0;
+  background: #171721;
+}
+
+@media (max-width: 720px) {
+  .server-deck-frame-shell,
+  .server-deck-frame {
+    min-height: calc(100vh - 142px);
+    height: calc(100vh - 142px);
+    border-radius: 18px;
+  }
+}

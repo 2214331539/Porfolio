@@ -9,6 +9,7 @@
     "dev": "vite frontend",
     "prebuild": "npm run sync:pdfjs",
     "build": "tsc -b frontend/tsconfig.app.json && vite build frontend",
+    "build:serverdeck": "npm --prefix serverdeck ci --no-audit --no-fund && npm --prefix serverdeck run build",
     "prepreview": "npm run sync:pdfjs",
     "preview": "vite preview frontend"
   },

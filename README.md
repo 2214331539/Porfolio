@@ -19,6 +19,7 @@
 ```text
 frontend/   React 前端、页面、路由、样式
 backend/    FastAPI API、SQLAlchemy 模型、认证与文件上传
+serverdeck/ Server Deck 服务器资源管理模块（SSH 只读采集与加密凭据）
 uploads/    后端上传图片目录
 doc/        项目文档
 ```
