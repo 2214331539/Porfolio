@@ -2,24 +2,23 @@ import { flattenRepositories } from '../../../entities/repository/model/tree';
 import type { ContentRepository } from '../../../entities/repository/model/types';
 
 type RepositorySelectProps = {
+  id?: string;
   repositories: ContentRepository[];
   value: number | null;
   onChange: (value: number | null) => void;
-  label?: string;
+  noneLabel?: string;
 };
 
-export function RepositorySelect({ repositories, value, onChange, label = '所属仓库' }: RepositorySelectProps) {
+/** Native select listing the whole repository tree with indentation. */
+export function RepositorySelect({ id, repositories, value, onChange, noneLabel = '未归档' }: RepositorySelectProps) {
   return (
-    <label className="repository-select-field">
-      {label} <small>支持选择任意层级仓库</small>
-      <select value={value ?? ''} onChange={(event) => onChange(event.target.value ? Number(event.target.value) : null)}>
-        <option value="">未归档</option>
-        {flattenRepositories(repositories).map((repository) => (
-          <option value={repository.id} key={repository.id}>
-            {'　'.repeat(repository.depth)}{repository.depth ? '└ ' : ''}{repository.name}
-          </option>
-        ))}
-      </select>
-    </label>
+    <select id={id} className="select" value={value ?? ''} onChange={(event) => onChange(event.target.value ? Number(event.target.value) : null)}>
+      <option value="">{noneLabel}</option>
+      {flattenRepositories(repositories).map((repository) => (
+        <option value={repository.id} key={repository.id}>
+          {'　'.repeat(repository.depth)}{repository.depth ? '└ ' : ''}{repository.name}
+        </option>
+      ))}
+    </select>
   );
 }

@@ -1,7 +1,7 @@
 .resume-about-page {
   width: min(1180px, 100%);
   max-width: none;
-  padding: 130px 28px 110px;
+  padding: 48px 28px 40px;
 }
 
 .resume-archive {
@@ -26,9 +26,9 @@
   letter-spacing: .14em;
 }
 
-.resume-archive-head h1 {
-  margin: 12px 0 10px;
-  font-size: clamp(30px, 4vw, 46px);
+.resume-archive-head h2 {
+  margin: 10px 0 8px;
+  font-size: clamp(24px, 3vw, 30px);
   line-height: 1.25;
   letter-spacing: -.055em;
   text-wrap: balance;
@@ -595,7 +595,7 @@
 }
 
 @media (max-width: 680px) {
-  .resume-about-page { padding: 96px 18px 70px; }
+  .resume-about-page { padding: 24px 18px 40px; }
   .resume-archive-head { align-items: flex-start; flex-direction: column; gap: 20px; }
   .resume-controls { align-self: flex-end; }
   .resume-showcase { margin-top: 24px; }

@@ -1,3 +1,5 @@
+import type { ContentRepository } from '../../repository/model/types';
+
 export type Category = { id: number; name: string; slug: string; description?: string };
 export type Tag = { id: number; name: string; slug: string };
 export type PostStatus = 'draft' | 'published';
@@ -9,9 +11,9 @@ export type Post = {
   excerpt: string;
   content: string;
   cover_url?: string | null;
-  category?: Category;
+  category?: Category | null;
   category_id?: number | null;
-  repository?: import('../../repository/model/types').ContentRepository | null;
+  repository?: ContentRepository | null;
   repository_id?: number | null;
   tags: Tag[];
   tag_names?: string[];
@@ -22,4 +24,7 @@ export type Post = {
   reading_time: number;
   published_at: string;
   created_at: string;
+  updated_at: string;
 };
+
+export type PostInput = Partial<Omit<Post, 'tags' | 'repository' | 'category'>> & { tag_names?: string[] };

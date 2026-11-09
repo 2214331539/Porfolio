@@ -1,58 +1,98 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import type { WheelEvent } from 'react';
-import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { SiteContext } from '../../app/providers/site-provider';
-import { contentApi } from '../../features/content/api/content-api';
 import type { Note } from '../../entities/note/model/types';
 import type { Post } from '../../entities/post/model/types';
-import { NoteCard, PostCard, SectionHead } from '../../shared/ui';
+import type { Project } from '../../entities/project/model/projects';
+import type { InfoSource } from '../../entities/source/model/types';
+import { contentApi } from '../../features/content/api/content-api';
+import { portfolioApi } from '../../features/content/api/portfolio-api';
+import { sourcesApi } from '../../features/sources/sources-api';
+import { NoteCard, PostRow, WorkCard } from '../../shared/ui';
 
-function Typewriter({ mottos }: { mottos: string[] }) {
-  const phrases = useMemo(() => mottos.filter(Boolean), [mottos]);
-  const [text, setText] = useState('');
-  const [phraseIndex, setPhraseIndex] = useState(() => (phrases.length ? Math.floor(Math.random() * phrases.length) : 0));
-  const [deleting, setDeleting] = useState(false);
+const BubbleField = lazy(() => import('../../features/sources/BubbleField').then((module) => ({ default: module.BubbleField })));
 
+/** A card whose media is the live, draggable 信息源泉 bubble field. */
+function SourcesCard({ sources }: { sources: InfoSource[] }) {
+  const mediaRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
   useEffect(() => {
-    if (!phrases.length) return undefined;
-    const target = phrases[phraseIndex % phrases.length];
-    const wait = !deleting && text === target ? 2200 : deleting && !text ? 400 : deleting ? 45 : 100;
-    const timer = window.setTimeout(() => {
-      if (!deleting && text === target) setDeleting(true);
-      else if (deleting && !text) {
-        setDeleting(false);
-        setPhraseIndex((current) => {
-          const normalized = current % phrases.length;
-          if (phrases.length <= 1) return normalized;
-          let next = normalized;
-          while (next === normalized) next = Math.floor(Math.random() * phrases.length);
-          return next;
-        });
-      } else {
-        setText(target.slice(0, text.length + (deleting ? -1 : 1)));
-      }
-    }, wait);
-    return () => window.clearTimeout(timer);
-  }, [deleting, phraseIndex, phrases, text]);
-
-  if (!phrases.length) return null;
-  const tailStart = Math.max(0, text.length - 2);
+    const media = mediaRef.current;
+    if (!media) return undefined;
+    const observer = new ResizeObserver(([entry]) => setHeight(Math.round(entry.contentRect.width * 0.72)));
+    observer.observe(media);
+    return () => observer.disconnect();
+  }, []);
   return (
-    <span className="typewriter-text">
-      {text.slice(0, tailStart)}
-      <span className="typewriter-tail">{text.slice(tailStart)}<i className="caret" aria-hidden="true" /></span>
-    </span>
+    <div className="card-item sources-card">
+      <div className="card-media live" ref={mediaRef} style={{ height: height || undefined }}>
+        {height ? <Suspense fallback={null}><BubbleField sources={sources} height={height} compact /></Suspense> : null}
+      </div>
+      <Link className="card-body" to="/sources">
+        <div className="card-meta"><span className="card-kind">信息源泉</span><span>{sources.length} 个网站</span></div>
+        <h3>我常逛的地方<ArrowRight className="card-arrow" aria-hidden="true" /></h3>
+      </Link>
+    </div>
   );
 }
 
+function Shelf({ title, to, count, children }: { title: string; to: string; count: number; children: ReactNode }) {
+  return (
+    <section className="shelf" aria-label={title}>
+      <header className="shelf-head">
+        <h2>{title}</h2>
+        <Link to={to}>全部 {count}<ArrowRight aria-hidden="true" /></Link>
+      </header>
+      {children}
+    </section>
+  );
+}
+
+/**
+ * Home: articles read as a text column on the left, the visual things (latest photo set, the bubble field)
+ * stand beside them, and shelves of photo sets and works follow below.
+ */
 export default function HomePage() {
-  const { settings, settingsLoading, settingsError } = useContext(SiteContext); const [posts, setPosts] = useState<Post[]>([]); const [notes, setNotes] = useState<Note[]>([]); const [error, setError] = useState(''); const scrollRoot = useRef<HTMLDivElement>(null); const wheelDistance = useRef(0); const isAnimating = useRef(false);
-  useEffect(() => { Promise.all([contentApi.listPosts(), contentApi.listNotes()]).then(([p, n]) => { setPosts(p.slice(0, 4)); setNotes(n.slice(0, 4)); }).catch(err => setError(err instanceof Error ? err.message : '首页内容加载失败')); }, []);
-  const movePanel = (direction: 1 | -1) => { const root = scrollRoot.current; if (!root || isAnimating.current) return; const currentIndex = Math.round(root.scrollTop / root.clientHeight); const nextIndex = Math.max(0, Math.min(2, currentIndex + direction)); if (nextIndex === currentIndex) return; isAnimating.current = true; root.scrollTo({ top: nextIndex * root.clientHeight, behavior: 'smooth' }); window.setTimeout(() => { isAnimating.current = false; wheelDistance.current = 0; }, 760); };
-  const handleWheel = (event: WheelEvent<HTMLDivElement>) => { event.preventDefault(); if (isAnimating.current) return; wheelDistance.current += event.deltaY; if (Math.abs(wheelDistance.current) >= 42) movePanel(wheelDistance.current > 0 ? 1 : -1); };
-  if (settingsLoading) return <div className="page-loading">正在加载站点内容…</div>;
-  if (settingsError || error) return <div className="page-loading"><p className="form-error">{settingsError || error}</p></div>;
-  if (!settings) return null;
-  return <div className="landing-shell" ref={scrollRoot} onWheel={handleWheel}><section className="landing-panel hero"><div className="hero-copy reveal"><div className="hero-typewriter"><Typewriter mottos={settings.mottos}/></div></div><button className="scroll-cue" onClick={() => movePanel(1)} aria-label="向下滚动"><ArrowDown/></button></section><section id="writing" className="landing-panel landing-content"><div className="content-section"><SectionHead index="01 / WRITING" title="博客文章" description="关于技术、设计与生活的长期笔记。" to="/blog" link="查看全部文章"/><div className="masonry-posts">{posts.map((post, index) => <PostCard key={post.id} post={post} variant={index === 0 ? 'large visual' : index === 2 ? 'wide' : index === 3 ? 'visual' : ''}/>)}</div></div></section><section className="landing-panel notes-preview"><div className="content-section"><SectionHead index="02 / MOMENTS" title="图文笔记" description="一些不够长，却值得留下的瞬间。" to="/notes" link="进入图文集"/><div className="notes-grid">{notes.map(note => <NoteCard key={note.id} note={note}/>)}</div><Link className="big-link" to="/notes">继续看看 <ArrowUpRight/></Link></div><footer className="landing-footer"><img src="/assets/black_line.png" alt="站点标识"/><span>{settings.site_title}</span><small>© 2026</small></footer></section></div>;
+  const [posts, setPosts] = useState<Post[]>(contentApi.getCachedPosts() ?? []);
+  const [notes, setNotes] = useState<Note[]>(contentApi.getCachedNotes() ?? []);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [sources, setSources] = useState<InfoSource[]>(sourcesApi.cached() ?? []);
+
+  useEffect(() => {
+    contentApi.listPosts().then(setPosts).catch(() => undefined);
+    contentApi.listNotes().then(setNotes).catch(() => undefined);
+    portfolioApi.get().then((data) => setProjects(data.projects)).catch(() => undefined);
+    sourcesApi.list().then(setSources).catch(() => undefined);
+  }, []);
+
+  const sortedPosts = useMemo(() => [...posts].sort((a, b) => Number(b.is_pinned) - Number(a.is_pinned) || b.published_at.localeCompare(a.published_at) || b.id - a.id), [posts]);
+  const sortedNotes = useMemo(() => [...notes].sort((a, b) => b.published_at.localeCompare(a.published_at) || b.id - a.id), [notes]);
+  const [lead, ...restPosts] = sortedPosts;
+  const [firstNote, ...restNotes] = sortedNotes;
+
+  return (
+    <div className="home container">
+      <section className="home-top">
+        <div className="home-posts">
+          {lead ? <PostRow post={lead} lead /> : null}
+          {restPosts.slice(0, 5).map((post) => <PostRow key={post.id} post={post} />)}
+          {posts.length ? <Link className="more-link" to="/blog">全部文章<small>{posts.length}</small><ArrowRight aria-hidden="true" /></Link> : null}
+        </div>
+        <aside className="home-side">
+          {firstNote ? <NoteCard note={firstNote} kind="图文" tall /> : null}
+          {sources.length ? <SourcesCard sources={sources} /> : null}
+        </aside>
+      </section>
+      {restNotes.length ? (
+        <Shelf title="图文" to="/notes" count={notes.length}>
+          <div className="shelf-grid photos">{restNotes.slice(0, 4).map((note) => <NoteCard key={note.id} note={note} tall />)}</div>
+        </Shelf>
+      ) : null}
+      {projects.length ? (
+        <Shelf title="作品" to="/portfolio" count={projects.length}>
+          <div className="shelf-grid">{projects.slice(0, 4).map((project) => <WorkCard key={project.id} project={project} />)}</div>
+        </Shelf>
+      ) : null}
+    </div>
+  );
 }

@@ -12,8 +12,10 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   const [settingsLoading, setSettingsLoading] = useState(true);
   const [settingsError, setSettingsError] = useState<string | null>(null);
   const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem('inkfold_theme') as Theme) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+
   useEffect(() => { contentApi.getSettings().then(setSettings).catch(err => setSettingsError(err instanceof Error ? err.message : '站点设置加载失败')).finally(() => setSettingsLoading(false)); }, []);
   useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('inkfold_theme', theme); }, [theme]);
+
   const value = useMemo(() => ({ settings, settingsLoading, settingsError, theme, toggleTheme: () => setTheme((current) => current === 'light' ? 'dark' : 'light'), applySettings: setSettings }), [settings, settingsLoading, settingsError, theme]);
   return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>;
 }

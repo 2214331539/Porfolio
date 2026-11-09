@@ -6,6 +6,7 @@ if (!configuredApiBaseUrl) {
 
 const API_BASE_URL = configuredApiBaseUrl.replace(/\/+$/, '');
 const TOKEN_KEY = 'inkfold_token';
+export const AUTH_EXPIRED_EVENT = 'inkfold:auth-expired';
 
 export const apiUrl = (path: string) => `${API_BASE_URL}${path}`;
 
@@ -32,6 +33,11 @@ export async function http<T>(path: string, init: RequestInit = {}): Promise<T> 
     const payload = await response.json().catch(() => null);
     const detail = payload?.detail;
     const message = typeof detail === 'string' ? detail : Array.isArray(detail) ? detail.map((item: { msg?: string }) => item.msg || '请检查填写内容').join('；') : '请求失败';
+    // An expired admin session sends the admin back to the login screen instead of failing every request.
+    if (response.status === 401 && token && path.startsWith('/admin')) {
+      authStorage.clearToken();
+      window.dispatchEvent(new Event(AUTH_EXPIRED_EVENT));
+    }
     throw new ApiError(message, response.status);
   }
   return response.json() as Promise<T>;

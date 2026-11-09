@@ -76,6 +76,7 @@ class Note(Base):
     likes: Mapped[int] = mapped_column(Integer, default=0)
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
     repository: Mapped[RepositoryFolder | None] = relationship(back_populates="notes")
 
 class ResumeVersion(Base):
@@ -121,6 +122,22 @@ class Project(Base):
     screenshots: Mapped[list[dict]] = mapped_column(JSON, default=list)
     status: Mapped[str] = mapped_column(String(20), default='draft')
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
+
+class InfoSource(Base):
+    """A website the owner reads regularly, shown as a bubble on the 信息源泉 page."""
+    __tablename__ = 'info_sources'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(60))
+    url: Mapped[str] = mapped_column(String(500))
+    description: Mapped[str] = mapped_column(Text, default='')
+    category: Mapped[str] = mapped_column(String(40), default='')
+    color: Mapped[str] = mapped_column(String(20), default='')
+    icon_url: Mapped[str] = mapped_column(String(500), default='')
+    weight: Mapped[int] = mapped_column(Integer, default=3)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    is_visible: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
 
 class AdminUser(Base):
     __tablename__ = "admin_users"

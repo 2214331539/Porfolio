@@ -3,13 +3,12 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from PIL import Image, ImageOps, UnidentifiedImageError
 from sqlalchemy.orm import Session
 from app.api.deps import get_current_admin
-from app.core.config import BASE_DIR
+from app.core.config import UPLOADS_DIR
 from app.db.session import get_db
 from app.models.content import AdminUser
-from app.schemas.content import NoteIn, NoteOut, NoteUpdate, PostCreate, PostOut, PostUpdate, RepositoryCreate, RepositoryOut, RepositoryUpdate, ResumeVersionIn, ResumeVersionOut, ResumeVersionUpdate, SiteSettings
+from app.schemas.content import BulkAction, NoteIn, NoteOut, NoteUpdate, PostCreate, PostOut, PostUpdate, RepositoryCreate, RepositoryMove, RepositoryOut, RepositoryUpdate, ResumeVersionIn, ResumeVersionOut, ResumeVersionUpdate, SiteSettings
 from app.services.content_service import ContentService
 router = APIRouter(prefix='/admin', tags=['admin'], dependencies=[Depends(get_current_admin)])
-UPLOADS_DIR = BASE_DIR.parent.parent / 'uploads'
 @router.get('/dashboard')
 def dashboard(db: Session = Depends(get_db)): return ContentService(db).dashboard()
 @router.get('/resumes', response_model=list[ResumeVersionOut])
@@ -26,12 +25,16 @@ def list_repositories(content_type: str | None = None, db: Session = Depends(get
 def create_repository(payload: RepositoryCreate, db: Session = Depends(get_db)): return ContentService(db).create_repository(payload)
 @router.put('/repositories/{repository_id}', response_model=RepositoryOut)
 def update_repository(repository_id: int, payload: RepositoryUpdate, db: Session = Depends(get_db)): return ContentService(db).update_repository(repository_id, payload)
+@router.post('/repositories/{repository_id}/move', response_model=list[RepositoryOut])
+def move_repository(repository_id: int, payload: RepositoryMove, db: Session = Depends(get_db)): return ContentService(db).move_repository(repository_id, payload)
 @router.delete('/repositories/{repository_id}')
-def delete_repository(repository_id: int, db: Session = Depends(get_db)): ContentService(db).delete_repository(repository_id); return {'ok': True}
+def delete_repository(repository_id: int, lift_contents: bool = False, db: Session = Depends(get_db)): ContentService(db).delete_repository(repository_id, lift_contents); return {'ok': True}
 @router.get('/posts', response_model=list[PostOut])
 def list_posts(db: Session = Depends(get_db)): return ContentService(db).list_admin_posts()
 @router.get('/posts/{post_id}', response_model=PostOut)
 def get_post(post_id: int, db: Session = Depends(get_db)): return ContentService(db).get_admin_post(post_id)
+@router.post('/posts/bulk')
+def bulk_posts(payload: BulkAction, db: Session = Depends(get_db)): return ContentService(db).bulk_posts(payload)
 @router.post('/posts', response_model=PostOut)
 def create_post(payload: PostCreate, db: Session = Depends(get_db)): return ContentService(db).create_post(payload)
 @router.put('/posts/{post_id}', response_model=PostOut)
@@ -40,6 +43,10 @@ def update_post(post_id: int, payload: PostUpdate, db: Session = Depends(get_db)
 def delete_post(post_id: int, db: Session = Depends(get_db)): ContentService(db).delete_post(post_id); return {'ok': True}
 @router.get('/notes', response_model=list[NoteOut])
 def list_notes(db: Session = Depends(get_db)): return ContentService(db).list_admin_notes()
+@router.get('/notes/{note_id}', response_model=NoteOut)
+def get_note(note_id: int, db: Session = Depends(get_db)): return ContentService(db).get_admin_note(note_id)
+@router.post('/notes/bulk')
+def bulk_notes(payload: BulkAction, db: Session = Depends(get_db)): return ContentService(db).bulk_notes(payload)
 @router.post('/notes', response_model=NoteOut)
 def create_note(payload: NoteIn, db: Session = Depends(get_db)): return ContentService(db).create_note(payload)
 @router.put('/notes/{note_id}', response_model=NoteOut)
@@ -53,7 +60,7 @@ def upload_image(file: UploadFile = File(...), _: AdminUser = Depends(get_curren
     if file.content_type not in {'image/jpeg', 'image/png', 'image/webp'}: raise HTTPException(400, '仅支持 JPG、PNG、WebP')
     file.file.seek(0, 2); size = file.file.tell(); file.file.seek(0)
     if size > 10 * 1024 * 1024: raise HTTPException(400, '图片不能超过 10MB')
-    UPLOADS_DIR.mkdir(exist_ok=True); filename = f'{uuid4().hex}.webp'
+    UPLOADS_DIR.mkdir(parents=True, exist_ok=True); filename = f'{uuid4().hex}.webp'
     try:
         with Image.open(file.file) as source:
             if source.format not in {'JPEG', 'PNG', 'WEBP'}: raise HTTPException(400, '仅支持 JPG、PNG、WebP')
@@ -72,7 +79,7 @@ def upload_document(file: UploadFile = File(...), _: AdminUser = Depends(get_cur
     file.file.seek(0, 2); size = file.file.tell(); file.file.seek(0)
     if size > 15 * 1024 * 1024: raise HTTPException(400, 'PDF 文件不能超过 15MB')
     if file.file.read(5) != b'%PDF-': raise HTTPException(400, 'PDF 文件格式无效')
-    file.file.seek(0); UPLOADS_DIR.mkdir(exist_ok=True); filename = f'{uuid4().hex}.pdf'
+    file.file.seek(0); UPLOADS_DIR.mkdir(parents=True, exist_ok=True); filename = f'{uuid4().hex}.pdf'
     with (UPLOADS_DIR / filename).open('wb') as target:
         while chunk := file.file.read(1024 * 1024): target.write(chunk)
     return {'url': f'/uploads/{filename}'}

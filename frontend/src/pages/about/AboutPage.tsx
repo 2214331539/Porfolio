@@ -1,6 +1,8 @@
 import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Code2, Download, ExternalLink, FileText, Maximize2, MessageCircle, Music2, Send, X } from 'lucide-react';
+import type { PortfolioProfile } from '../../entities/project/model/projects';
 import type { ResumeVersion } from '../../entities/resume/model/types';
+import { portfolioApi } from '../../features/content/api/portfolio-api';
 import { contentApi } from '../../features/content/api/content-api';
 import { SiteContext } from '../../app/providers/site-provider';
 
@@ -94,6 +96,7 @@ export default function AboutPage() {
   const [loading, setLoading] = useState(!cached);
   const [error, setError] = useState('');
   const [readerVersion, setReaderVersion] = useState<ResumeVersion | null>(null);
+  const [profile, setProfile] = useState<PortfolioProfile | null>(null);
   const featuredRef = useRef<HTMLElement>(null);
   const platforms = [
     { name: '微信公众号', handle: settings?.wechat_handle || '小潘的数字花园', href: settings?.wechat_url || 'https://weixin.qq.com/', icon: MessageCircle, tone: 'wechat' },
@@ -110,6 +113,9 @@ export default function AboutPage() {
       })
       .catch((err) => setError(err instanceof Error ? err.message : '简历版本加载失败'))
       .finally(() => setLoading(false));
+    portfolioApi.get().then((data) => setProfile(data.profile)).catch(() => undefined);
+    document.title = '关于 · 小潘同学';
+    return () => { document.title = '小潘同学'; };
   }, []);
 
   const activeIndex = Math.max(0, versions.findIndex((version) => version.id === activeId));
@@ -127,12 +133,19 @@ export default function AboutPage() {
   }
 
   return (
-    <main className="about-page resume-about-page">
+    <div className="about-page resume-about-page">
+      {profile?.introduction ? (
+        <section className="about-intro" aria-labelledby="about-heading">
+          <p className="eyebrow">关于我</p>
+          <h1 id="about-heading">{profile.title}</h1>
+          {profile.introduction.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+        </section>
+      ) : null}
       <section className="resume-archive" aria-labelledby="resume-heading">
         <header className="resume-archive-head">
           <div>
             <p>RESUME ARCHIVE / 个人简历</p>
-            <h1 id="resume-heading">简历与版本记录</h1>
+            <h2 id="resume-heading">简历与版本记录</h2>
             <span>当前版本居中展示，从左侧版本栏选择过往简历。</span>
           </div>
           {versions.length > 1 ? (
@@ -227,6 +240,6 @@ export default function AboutPage() {
         </div>
       </section>
       {readerVersion ? <ResumeReaderDialog version={readerVersion} onClose={() => setReaderVersion(null)} /> : null}
-    </main>
+    </div>
   );
 }

@@ -1,69 +1,92 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Share2 } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Link2 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { contentApi } from '../../features/content/api/content-api';
 import type { Note } from '../../entities/note/model/types';
+import { contentApi } from '../../features/content/api/content-api';
+import { formatDate } from '../../shared/format';
+import { PageState } from '../../shared/ui';
 
 export default function NotePage() {
   const { id = '0' } = useParams();
   const [note, setNote] = useState<Note>();
   const [image, setImage] = useState(0);
   const [liked, setLiked] = useState(false);
-  const [liking, setLiking] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [actionError, setActionError] = useState('');
 
   useEffect(() => {
     setLoading(true);
     setError('');
     setImage(0);
     contentApi.getNote(Number(id))
-      .then(setNote)
+      .then((item) => { setNote(item); document.title = `${item.title} · 小潘同学`; })
       .catch((err) => setError(err instanceof Error ? err.message : '图文加载失败'))
       .finally(() => setLoading(false));
+    return () => { document.title = '小潘同学'; };
   }, [id]);
 
+  const count = note?.images.length ?? 0;
+  useEffect(() => {
+    if (count < 2) return undefined;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') setImage((value) => (value - 1 + count) % count);
+      if (event.key === 'ArrowRight') setImage((value) => (value + 1) % count);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [count]);
+
   async function like() {
-    if (!note || liked || liking) return;
-    setLiking(true);
-    setActionError('');
-    try {
-      setNote(await contentApi.likeNote(note.id));
-      setLiked(true);
-    } catch (err) {
-      setActionError(err instanceof Error ? err.message : '点赞失败');
-    } finally {
-      setLiking(false);
-    }
+    if (!note || liked) return;
+    setLiked(true);
+    try { setNote(await contentApi.likeNote(note.id)); } catch { setLiked(false); }
   }
 
-  if (loading) return <div className="page-loading">正在加载图文…</div>;
-  if (error || !note) return <div className="page-loading"><div className="form-error">{error || '图文不存在'}</div><Link className="text-link" to="/notes">返回图文仓库</Link></div>;
-  const count = note.images.length;
+  function share() {
+    void navigator.clipboard?.writeText(window.location.href).then(() => { setCopied(true); window.setTimeout(() => setCopied(false), 1500); });
+  }
+
+  if (loading) return <PageState>正在加载图文…</PageState>;
+  if (error || !note) return <PageState tone="error">{error || '图文不存在'} <Link to="/notes">返回图文</Link></PageState>;
+
   const repositoryId = note.repository?.id ?? note.repository_id;
-  const backTo = repositoryId ? `/notes?repository=${repositoryId}` : '/notes';
   return (
-    <main className="note-detail refined-note">
-      <Link to={backTo} className="back-link"><ArrowLeft />返回{note.repository?.name || '图文仓库'}</Link>
+    <div className="note-detail container">
+      <Link to={repositoryId ? `/notes?repository=${repositoryId}` : '/notes'} className="back-link"><ArrowLeft aria-hidden="true" />{note.repository?.name ?? '图文'}</Link>
       <div className="note-detail-grid">
         <div className="gallery">
-          {count ? <img src={note.images[image]} alt={`${note.title} · ${image + 1}`} /> : <p className="empty-state">暂无图片</p>}
-          {count > 1 ? <><button className="gallery-prev" type="button" onClick={() => setImage((value) => (value - 1 + count) % count)} aria-label="上一张"><ChevronLeft /></button><button className="gallery-next" type="button" onClick={() => setImage((value) => (value + 1) % count)} aria-label="下一张"><ChevronRight /></button></> : null}
-          {count ? <div className="gallery-count">{image + 1} / {count}</div> : null}
+          <div className="gallery-stage">
+            {count ? <img src={note.images[image]} alt={`${note.title}（${image + 1}/${count}）`} /> : <p>没有图片</p>}
+            {count > 1 ? (
+              <>
+                <button className="gallery-nav prev" type="button" onClick={() => setImage((value) => (value - 1 + count) % count)} aria-label="上一张"><ChevronLeft aria-hidden="true" /></button>
+                <button className="gallery-nav next" type="button" onClick={() => setImage((value) => (value + 1) % count)} aria-label="下一张"><ChevronRight aria-hidden="true" /></button>
+                <span className="gallery-count">{image + 1} / {count}</span>
+              </>
+            ) : null}
+          </div>
+          {count > 1 ? (
+            <div className="gallery-thumbs" role="tablist" aria-label="选择图片">
+              {note.images.map((src, index) => (
+                <button key={`${src}-${index}`} type="button" role="tab" aria-selected={index === image} className={index === image ? 'active' : ''} onClick={() => setImage(index)}>
+                  <img src={src} alt="" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
-        <article className="note-body">
-          <p className="eyebrow">{note.repository?.name || '未归档'} · {new Date(note.published_at).toLocaleDateString('zh-CN')}</p>
+        <article className="note-text">
+          <time dateTime={note.published_at}>{formatDate(note.published_at)}</time>
           <h1>{note.title}</h1>
-          <p>{note.content}</p>
-          <div className="note-tags">{note.topics.map((topic) => <span key={topic}>#{topic}</span>)}</div>
-          {actionError ? <div className="form-error">{actionError}</div> : null}
+          {note.content ? <p>{note.content}</p> : null}
+          {note.topics.length ? <div className="chip-row">{note.topics.map((topic) => <span className="chip" key={topic}>#{topic}</span>)}</div> : null}
           <div className="note-actions">
-            <button type="button" onClick={like} disabled={liked || liking} className={liked ? 'liked' : ''}><Heart fill={liked ? 'currentColor' : 'none'} /> {note.likes}</button>
-            <button type="button" onClick={() => navigator.clipboard?.writeText(window.location.href)}><Share2 />分享</button>
+            <button type="button" className={`button small ${liked ? 'liked' : ''}`} onClick={like} disabled={liked}><Heart fill={liked ? 'currentColor' : 'none'} aria-hidden="true" />{note.likes}</button>
+            <button type="button" className="button small" onClick={share}><Link2 aria-hidden="true" />{copied ? '链接已复制' : '复制链接'}</button>
           </div>
         </article>
       </div>
-    </main>
+    </div>
   );
 }

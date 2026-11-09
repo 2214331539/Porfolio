@@ -4,10 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api.routes import admin, auth, public, portfolio
-from app.core.config import BASE_DIR, settings
-
-UPLOADS_DIR = BASE_DIR.parent.parent / "uploads"
+from app.api.routes import admin, auth, public, portfolio, sources
+from app.core.config import UPLOADS_DIR, settings
 
 # Python's Windows MIME registry does not consistently include WebP. Without
 # this explicit mapping StaticFiles may send uploaded images as text/plain,
@@ -29,13 +27,15 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    UPLOADS_DIR.mkdir(exist_ok=True)
+    UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
     application.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
     application.include_router(public.router, prefix="/api")
     application.include_router(auth.router, prefix="/api")
     application.include_router(admin.router, prefix="/api")
     application.include_router(portfolio.router, prefix="/api")
     application.include_router(portfolio.admin_router, prefix="/api")
+    application.include_router(sources.router, prefix="/api")
+    application.include_router(sources.admin_router, prefix="/api")
     return application
 
 

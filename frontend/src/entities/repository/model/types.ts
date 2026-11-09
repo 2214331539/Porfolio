@@ -12,7 +12,5 @@ export type ContentRepository = {
   child_count: number;
 };
 
-export type RepositoryInput = Pick<ContentRepository, 'name' | 'description' | 'content_type' | 'parent_id' | 'sort_order'> & {
-  id?: number;
-  slug?: string;
-};
+export type RepositoryInput = Pick<ContentRepository, 'name' | 'content_type'> &
+  Partial<Pick<ContentRepository, 'description' | 'parent_id' | 'sort_order' | 'slug'>> & { id?: number };

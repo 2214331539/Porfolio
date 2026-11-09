@@ -1,0 +1,55 @@
+/* Rendered Markdown on article pages. The admin editor mirrors these sizes so writing looks like reading. */
+.prose { color: var(--text); font-size: 17px; line-height: 1.9; overflow-wrap: break-word; }
+.prose > :first-child { margin-top: 0; }
+.prose p, .prose ul, .prose ol, .prose blockquote, .prose pre, .prose .table-scroll, .prose figure, .prose hr, .prose .katex-display { margin: 0 0 1.2em; }
+.prose h1, .prose h2, .prose h3, .prose h4 { margin: 2em 0 .7em; font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); line-height: 1.4; scroll-margin-top: calc(var(--header-height) + 20px); }
+.prose h1 { font-size: 1.75em; }
+.prose h2 { position: relative; font-size: 1.55em; }
+.prose h3 { font-size: 1.25em; }
+.prose h4 { font-size: 1.05em; }
+.prose a { color: var(--accent-ink); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.prose a:hover { color: var(--accent); text-decoration-color: currentColor; }
+.prose strong { font-weight: 650; background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent-soft) 90%, transparent) 62%); }
+.prose ul, .prose ol { padding-left: 1.5em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li { margin: .35em 0; }
+.prose li > ul, .prose li > ol { margin: .35em 0; }
+.prose li::marker { color: var(--accent); }
+.prose li:has(> input[type='checkbox']) { list-style: none; margin-left: -1.3em; }
+.prose input[type='checkbox'] { margin: 0 .5em 0 0; vertical-align: middle; accent-color: var(--accent); }
+.prose blockquote { padding: .3em 0 .3em 1.1em; border-left: 3px solid var(--accent); color: var(--text-2); }
+.prose blockquote > :last-child { margin-bottom: 0; }
+.prose hr { height: auto; border: 0; margin: 2.6em 0; text-align: center; }
+.prose hr::after { content: '· · ·'; color: var(--text-3); font-family: var(--font-accent); font-size: 22px; letter-spacing: .6em; }
+.prose img { max-width: 100%; height: auto; margin: .4em auto; border-radius: var(--radius-sm); }
+.prose code { padding: .15em .4em; border-radius: 4px; background: var(--surface-2); color: var(--accent-ink); font: .85em/1.5 var(--font-mono); }
+.prose pre { position: relative; overflow-x: auto; padding: 18px 20px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--code-bg); line-height: 1.65; }
+.prose pre code { display: block; padding: 0; background: none; color: var(--text); font-size: 13.5px; white-space: pre; }
+.prose .copy-code { position: absolute; top: 8px; right: 8px; padding: 2px 8px; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text-3); font-size: 12px; opacity: 0; transition: opacity .15s; }
+.prose pre:hover .copy-code, .prose .copy-code:focus-visible { opacity: 1; }
+.prose .table-scroll { overflow-x: auto; }
+.prose table { width: 100%; border-collapse: collapse; font-size: .92em; }
+.prose th, .prose td { padding: 8px 12px; border: 1px solid var(--border-strong); text-align: left; vertical-align: top; }
+.prose th { background: var(--surface-2); font-weight: 600; }
+.prose .katex-display { overflow-x: auto; overflow-y: hidden; padding: .3em 0; }
+.prose .katex { font-size: 1.05em; }
+
+/* highlight.js, coloured from the shared code tokens */
+.hljs { color: var(--text); }
+.hljs-comment, .hljs-quote { color: var(--text-3); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-type, .hljs-meta .hljs-keyword { color: var(--code-keyword); }
+.hljs-string, .hljs-regexp, .hljs-addition, .hljs-attribute, .hljs-meta .hljs-string { color: var(--code-string); }
+.hljs-number, .hljs-symbol, .hljs-bullet, .hljs-variable.constant_ { color: var(--code-number); }
+.hljs-title, .hljs-title.function_, .hljs-section { color: var(--code-function); }
+.hljs-title.class_, .hljs-built_in, .hljs-class .hljs-title { color: var(--code-type); }
+.hljs-attr, .hljs-variable, .hljs-template-variable, .hljs-property, .hljs-params { color: var(--code-property); }
+.hljs-meta, .hljs-tag, .hljs-name, .hljs-selector-id, .hljs-selector-class { color: var(--code-tag); }
+.hljs-deletion { color: var(--danger); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 700; }
+
+@media (max-width: 680px) {
+  .prose { font-size: 16.5px; line-height: 1.85; }
+  .prose pre { margin-inline: -16px; border-radius: 0; border-inline: 0; }
+}

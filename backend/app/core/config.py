@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     admin_password: str
     frontend_url: str = "http://localhost:5173"
     access_token_minutes: int = 60 * 24 * 7
+    # Uploaded images and PDFs; defaults to the repository-level uploads/ folder.
+    uploads_dir: Path = BACKEND_DIR.parent / "uploads"
     model_config = SettingsConfigDict(
         env_file=BACKEND_DIR / ".env",
         env_file_encoding="utf-8",
@@ -18,3 +20,4 @@ class Settings(BaseSettings):
     )
 
 settings = Settings()
+UPLOADS_DIR = settings.uploads_dir.resolve()

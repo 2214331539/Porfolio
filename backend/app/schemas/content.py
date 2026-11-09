@@ -19,27 +19,31 @@ class RepositoryCreate(BaseModel):
 class RepositoryUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=80); slug: str | None = Field(default=None, max_length=100)
     description: str | None = None; parent_id: int | None = None; sort_order: int | None = None
+class RepositoryMove(BaseModel):
+    parent_id: int | None = None; position: int = Field(default=0, ge=0)
+class BulkAction(BaseModel):
+    ids: list[int] = Field(min_length=1, max_length=500); action: Literal['move', 'publish', 'draft', 'delete']; repository_id: int | None = None
 class PostBase(BaseModel):
-    title: str; slug: str; excerpt: str = ""; content: str = ""; cover_url: str | None = None
-    status: Literal['draft', 'published'] = "draft"; is_pinned: bool = False; is_private: bool = False
+    title: str = Field(min_length=1, max_length=240); slug: str | None = Field(default=None, max_length=260); excerpt: str = ""; content: str = ""; cover_url: str | None = None
+    status: Literal['draft', 'published'] = "draft"; is_pinned: bool = False; is_private: bool = False; published_at: datetime | None = None
     category_id: int | None = None; repository_id: int | None = None; tag_names: list[str] = Field(default_factory=list)
 class PostCreate(PostBase): pass
 class PostUpdate(BaseModel):
-    title: str | None = None; slug: str | None = None; excerpt: str | None = None; content: str | None = None
+    title: str | None = Field(default=None, min_length=1, max_length=240); slug: str | None = Field(default=None, max_length=260); excerpt: str | None = None; content: str | None = None
     cover_url: str | None = None; status: Literal['draft', 'published'] | None = None; is_pinned: bool | None = None; is_private: bool | None = None
-    category_id: int | None = None; repository_id: int | None = None; tag_names: list[str] | None = None
+    published_at: datetime | None = None; category_id: int | None = None; repository_id: int | None = None; tag_names: list[str] | None = None
 class PostOut(BaseModel):
     id: int; title: str; slug: str; excerpt: str; content: str; cover_url: str | None; status: str
-    is_pinned: bool; is_private: bool; repository_id: int | None = None; views: int; reading_time: int; published_at: datetime; created_at: datetime
+    is_pinned: bool; is_private: bool; repository_id: int | None = None; views: int; reading_time: int; published_at: datetime; created_at: datetime; updated_at: datetime
     category: CategoryOut | None = None; repository: RepositorySummary | None = None; tags: list[TagOut] = Field(default_factory=list)
     model_config = ConfigDict(from_attributes=True)
 class NoteIn(BaseModel):
-    title: str; content: str = ""; images: list[str] = Field(default_factory=list); topics: list[str] = Field(default_factory=list); repository_id: int | None = None; status: Literal['draft', 'published'] = "draft"; is_pinned: bool = False
+    title: str = Field(min_length=1, max_length=120); content: str = ""; images: list[str] = Field(default_factory=list); topics: list[str] = Field(default_factory=list); repository_id: int | None = None; status: Literal['draft', 'published'] = "draft"; is_pinned: bool = False
 class NoteUpdate(BaseModel):
-    title: str | None = None; content: str | None = None; images: list[str] | None = None; topics: list[str] | None = None; repository_id: int | None = None
+    title: str | None = Field(default=None, min_length=1, max_length=120); content: str | None = None; images: list[str] | None = None; topics: list[str] | None = None; repository_id: int | None = None
     status: Literal['draft', 'published'] | None = None; is_pinned: bool | None = None
 class NoteOut(NoteIn):
-    id: int; views: int; likes: int; published_at: datetime
+    id: int; views: int; likes: int; published_at: datetime; created_at: datetime; updated_at: datetime
     repository: RepositorySummary | None = None
     model_config = ConfigDict(from_attributes=True)
 class ResumeVersionIn(BaseModel):

@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.orm import Session
-from app.core.config import BASE_DIR
+from app.core.config import UPLOADS_DIR
 from app.db.session import get_db
 from app.schemas.content import NoteOut, PostOut, RepositoryOut, ResumeVersionOut, SiteSettings
 from app.services.content_service import ContentService
@@ -18,10 +18,9 @@ def download_resume(resume_id: int, request: Request, db: Session = Depends(get_
     if not resume.pdf_url: raise HTTPException(404, '该版本没有 PDF 文件')
     parsed = urlparse(resume.pdf_url)
     filename = Path(parsed.path).name
-    local_file = (BASE_DIR.parent.parent / 'uploads' / filename).resolve()
-    uploads_dir = (BASE_DIR.parent.parent / 'uploads').resolve()
+    local_file = (UPLOADS_DIR / filename).resolve()
     is_local_upload = parsed.path.startswith('/uploads/') and parsed.hostname in {None, request.url.hostname, 'localhost', '127.0.0.1'}
-    if is_local_upload and filename and local_file.parent == uploads_dir and local_file.is_file():
+    if is_local_upload and filename and local_file.parent == UPLOADS_DIR and local_file.is_file():
         return FileResponse(local_file, media_type='application/pdf', filename=f'{resume.title}.pdf')
     if parsed.scheme in {'http', 'https'}: return RedirectResponse(resume.pdf_url)
     raise HTTPException(404, 'PDF 文件不存在')
