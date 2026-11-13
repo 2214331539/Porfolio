@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api.routes import admin, auth, public, portfolio, sources
+from app.api.routes import admin, auth, doing, public, portfolio, sources
 from app.core.config import UPLOADS_DIR, settings
 
 # Python's Windows MIME registry does not consistently include WebP. Without
@@ -36,6 +36,8 @@ def create_app() -> FastAPI:
     application.include_router(portfolio.admin_router, prefix="/api")
     application.include_router(sources.router, prefix="/api")
     application.include_router(sources.admin_router, prefix="/api")
+    application.include_router(doing.router, prefix="/api")
+    application.include_router(doing.admin_router, prefix="/api")
     return application
 
 

@@ -585,3 +585,11 @@ button.library-description:hover { color: var(--text); }
   .source-row { grid-template-columns: 40px minmax(0, 1fr) 112px; }
   .source-desc, .source-row > span:nth-child(4), .source-weight { display: none; }
 }
+
+/* Doing */
+.doing-admin .doing-line { margin-top: 18px; }
+.doing-admin .doing-note { cursor: grab; }
+.doing-admin .doing-note.ghost { cursor: pointer; }
+.doing-form-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: start; }
+.doing-form-actions { justify-content: space-between; align-items: center; }
+.doing-form-buttons { display: inline-flex; gap: 8px; }

@@ -12,6 +12,7 @@ const NAV = [
   { to: '/blog', label: '文章', prefetch: 'post' as const },
   { to: '/notes', label: '图文', prefetch: 'note' as const },
   { to: '/portfolio', label: '作品' },
+  { to: '/doing', label: 'Doing' },
   { to: '/sources', label: '信息源泉' },
   { to: '/about', label: '关于' },
 ];

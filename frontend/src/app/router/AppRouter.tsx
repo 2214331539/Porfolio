@@ -12,6 +12,7 @@ const AboutPage = lazy(() => import('../../pages/about/AboutPage'));
 const PortfolioPage = lazy(() => import('../../pages/portfolio/PortfolioPage'));
 const AdminPage = lazy(() => import('../../pages/admin/AdminPage'));
 const SourcesPage = lazy(() => import('../../pages/sources/SourcesPage'));
+const DoingPage = lazy(() => import('../../pages/doing/DoingPage'));
 
 function PageLoading() {
   return <div className="page-state" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" />加载中…</div>;
@@ -39,6 +40,7 @@ export function AppRouter() {
         <Route path="/notes" element={<NotesPage />} />
         <Route path="/notes/:id" element={deferred(<NotePage />)} />
         <Route path="/portfolio" element={deferred(<PortfolioPage />)} />
+        <Route path="/doing" element={deferred(<DoingPage />)} />
         <Route path="/sources" element={deferred(<SourcesPage />)} />
         <Route path="/about" element={deferred(<AboutPage />)} />
         <Route path="/404" element={<NotFound />} />

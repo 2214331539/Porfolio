@@ -139,6 +139,18 @@ class InfoSource(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
 
+class Doing(Base):
+    """Something the owner is working on right now: a sticky note on the 主线 or 临时线 clothesline of the Doing page."""
+    __tablename__ = 'doings'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(60))
+    body: Mapped[str] = mapped_column(Text, default='')
+    started_on: Mapped[date] = mapped_column(Date)
+    kind: Mapped[str] = mapped_column(String(10), default='main')
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
+
 class AdminUser(Base):
     __tablename__ = "admin_users"
     id: Mapped[int] = mapped_column(primary_key=True)

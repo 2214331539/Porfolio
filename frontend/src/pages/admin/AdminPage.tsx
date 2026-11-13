@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, type FormEvent, type MouseEvent } from 'react';
-import { ArrowUpRight, BookOpen, FileText, Files, Image, LayoutDashboard, LogOut, Menu, Moon, Orbit, Server, Settings, Sun, X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, FileText, Files, Image, LayoutDashboard, LogOut, Menu, Moon, Orbit, Server, Settings, StickyNote, Sun, X } from 'lucide-react';
 import { Link, Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { SiteContext } from '../../app/providers/site-provider';
 import { authApi } from '../../features/auth/api/auth-api';
@@ -8,6 +8,7 @@ import { errorMessage } from '../../shared/format';
 import '../../app/styles/admin.css';
 import { AdminUiProvider, useAdminUi } from './AdminUi';
 import { Dashboard } from './Dashboard';
+import { DoingAdmin } from './DoingAdmin';
 import { NoteEditor } from './editor/NoteEditor';
 import { PostEditor } from './editor/PostEditor';
 import { LibraryPage } from './library/LibraryPage';
@@ -21,7 +22,7 @@ type NavItem = { to: string; label: string; icon: typeof FileText; end?: boolean
 const NAV_GROUPS: Array<{ label: string; items: NavItem[] }> = [
   { label: '', items: [{ to: '/admin', label: '总览', icon: LayoutDashboard, end: true }] },
   { label: '内容', items: [{ to: '/admin/posts', label: '文章', icon: FileText }, { to: '/admin/notes', label: '图文', icon: Image }] },
-  { label: '展示', items: [{ to: '/admin/portfolio', label: '作品集', icon: BookOpen }, { to: '/admin/sources', label: '信息源泉', icon: Orbit }, { to: '/admin/resumes', label: '简历', icon: Files }] },
+  { label: '展示', items: [{ to: '/admin/portfolio', label: '作品集', icon: BookOpen }, { to: '/admin/doing', label: 'Doing', icon: StickyNote }, { to: '/admin/sources', label: '信息源泉', icon: Orbit }, { to: '/admin/resumes', label: '简历', icon: Files }] },
   { label: '系统', items: [{ to: '/admin/settings', label: '站点设置', icon: Settings }, { to: '/admin/server-deck', label: '服务器', icon: Server }] },
 ];
 
@@ -116,6 +117,7 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
           <Route path="portfolio/profile" element={<PortfolioProfileEditor />} />
           <Route path="portfolio/new" element={<PortfolioProjectEditor />} />
           <Route path="portfolio/:id" element={<PortfolioProjectEditor />} />
+          <Route path="doing" element={<DoingAdmin />} />
           <Route path="sources" element={<SourcesAdmin />} />
           <Route path="resumes" element={<ResumeVersionsAdmin />} />
           <Route path="server-deck" element={<ServerDeckAdmin />} />
